@@ -1,0 +1,47 @@
+walk.png
+size: 104, 900
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+walk1
+  rotate: false
+  xy: 0, 0
+  size: 104, 150
+  orig: 104, 150
+  offset: 0, 0
+  index: -1
+walk2
+  rotate: false
+  xy: 0, 150
+  size: 104, 150
+  orig: 104, 150
+  offset: 0, 0
+  index: -1
+walk3
+  rotate: false
+  xy: 0, 300
+  size: 104, 150
+  orig: 104, 150
+  offset: 0, 0
+  index: -1
+walk4
+  rotate: false
+  xy: 0, 450
+  size: 104, 150
+  orig: 104, 150
+  offset: 0, 0
+  index: -1
+walk5
+  rotate: false
+  xy: 0, 600
+  size: 104, 150
+  orig: 104, 150
+  offset: 0, 0
+  index: -1
+walk6
+  rotate: false
+  xy: 0, 750
+  size: 104, 150
+  orig: 104, 150
+  offset: 0, 0
+  index: -1

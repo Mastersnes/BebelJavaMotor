@@ -1,0 +1,10 @@
+De base un element :
+	- Est visible ou non
+	- Est transformable (position, taille, rotation, echelle)
+	- Peut posseder une image de fond
+	- Peut posseder un referentiel d'animation 
+	- N'est pas forcement interactive ou clickable
+	
+	
+EventManager ?
+Element (Statable) > MovableElement > TransformableElement > DrawableElement > AnimableElement
