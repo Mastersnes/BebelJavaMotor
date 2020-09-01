@@ -4,22 +4,22 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.bebel</groupId>
-		<artifactId>test1</artifactId>
+		<artifactId>bebelMotor</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>test1-desktop</artifactId>
+	<artifactId>bebelMotor-desktop</artifactId>
 	<packaging>jar</packaging>
-	<name>Test1 desktop</name>
+	<name>BebelMotor desktop</name>
 
 	<properties>
-		<mainClass>com.bebel.java.Test1Desktop</mainClass>
+		<mainClass>com.bebel.java.BebelMotorDesktop</mainClass>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.bebel</groupId>
-			<artifactId>test1-core</artifactId>
+			<artifactId>bebelMotor-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

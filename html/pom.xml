@@ -4,23 +4,23 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.bebel</groupId>
-		<artifactId>test1</artifactId>
+		<artifactId>bebelMotor</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>test1-html</artifactId>
+	<artifactId>bebelMotor-html</artifactId>
 	<packaging>war</packaging>
-	<name>Test1 HTML</name>
+	<name>BebelMotor HTML</name>
 
 	<properties>
-		<gwt.module>com.bebel.Test1</gwt.module>
-		<gwt.name>test1</gwt.name>
+		<gwt.module>com.bebel.BebelMotor</gwt.module>
+		<gwt.name>bebelMotor</gwt.name>
 	</properties>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.bebel</groupId>
-			<artifactId>test1-core</artifactId>
+			<artifactId>bebelMotor-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -31,7 +31,7 @@
 
 		<dependency>
 			<groupId>com.bebel</groupId>
-			<artifactId>test1-core</artifactId>
+			<artifactId>bebelMotor-core</artifactId>
 			<version>${project.version}</version>
 			<classifier>sources</classifier>
 			<scope>provided</scope>

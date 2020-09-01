@@ -8,8 +8,8 @@
 		<ProjectGuid>{3E0014BA-5CAE-4962-A8E4-6BCA453CF618}</ProjectGuid>
 		<ProjectTypeGuids>{6BC8ED88-2882-458C-8E55-DFD12B67127B};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
 		<OutputType>Exe</OutputType>
-		<RootNamespace>Test1</RootNamespace>
-		<AssemblyName>Test1</AssemblyName>
+		<RootNamespace>BebelMotor</RootNamespace>
+		<AssemblyName>BebelMotor</AssemblyName>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
 		<DebugSymbols>true</DebugSymbols>
@@ -64,8 +64,8 @@
 		<Reference Include="System.Core" />
 		<Reference Include="monotouch" />
 		<Reference Include="OpenTK" />
-		<Reference Include="test1-ios">
-			<HintPath>bin\test1-ios.dll</HintPath>
+		<Reference Include="bebelMotor-ios">
+			<HintPath>bin\bebelMotor-ios.dll</HintPath>
 		</Reference>
 		<Reference Include="IKVM.OpenJDK.Core">
 			<HintPath>bin\IKVM.OpenJDK.Core.dll</HintPath>

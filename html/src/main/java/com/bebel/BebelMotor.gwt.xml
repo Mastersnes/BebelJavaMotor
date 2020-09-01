@@ -1,4 +1,4 @@
-<module rename-to='test1'>
+<module rename-to='bebelMotor'>
 	<inherits name='com.badlogic.gdx.backends.gdx_backends_gwt' />
 
 	<source path='core'/>
@@ -6,7 +6,7 @@
 
 	<public path="resources" />
 
-	<entry-point class='com.bebel.html.Test1Html'/>
+	<entry-point class='com.bebel.html.BebelMotorHtml'/>
 	<set-configuration-property name="gdx.assetpath" value="assets" />
 	<set-configuration-property name="gdx.assetoutputpath" value="html/target/webapp" />
 </module>

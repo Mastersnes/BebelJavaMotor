@@ -9,7 +9,7 @@ namespace com.bebel
 {
 	[Register ("AppDelegate")]
 	public partial class AppDelegate : IOSApplication {
-		public AppDelegate () : base(new Test1(), createConfig()) {}
+		public AppDelegate () : base(new BebelMotor(), createConfig()) {}
 
 		internal static IOSApplicationConfiguration createConfig () {
 			IOSApplicationConfiguration config = new IOSApplicationConfiguration();

@@ -5,18 +5,18 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>com.bebel</groupId>
-		<artifactId>test1</artifactId>
+		<artifactId>bebelMotor</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>test1-ios</artifactId>
+	<artifactId>bebelMotor-ios</artifactId>
 	<packaging>dll</packaging>
-	<name>Test1 iOS</name>
+	<name>BebelMotor iOS</name>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.bebel</groupId>
-			<artifactId>test1-core</artifactId>
+			<artifactId>bebelMotor-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 

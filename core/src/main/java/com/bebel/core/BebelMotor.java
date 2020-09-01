@@ -7,7 +7,7 @@ import com.bebel.api.resources.ResourceManager;
 import com.bebel.core.tableaux.Coffre;
 import com.bebel.core.tableaux.Tableaux;
 
-public class Test1 extends BebelGame {
+public class BebelMotor extends BebelGame {
     @Override
     public void create() {
         super.create();
