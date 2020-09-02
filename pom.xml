@@ -13,6 +13,8 @@
 		<android.maven.version>3.8.1</android.maven.version>
 		<gwt.version>2.6.0</gwt.version>
 		<gwt.maven.version>2.6.0</gwt.maven.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 	<dependencyManagement>
 		<dependencies>
@@ -113,8 +115,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>8</source>
+					<target>8</target>
 				</configuration>
 			</plugin>
 		</plugins>
