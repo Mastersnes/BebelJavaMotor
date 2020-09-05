@@ -20,7 +20,7 @@ import java.util.List;
  * Represente un element dessinable regroupant d'autres elements
  */
 //public class OldGroupElement extends Element implements Iterable<AbstractElement> {
-//    protected final SnapshotArray<AbstractElement> children = new SnapshotArray(true, 4, AbstractElement.class);
+//    protected final List<AbstractElement> children = new ArrayList<>();
 //    protected final Matrix4 paintTx = new Matrix4();
 //    protected final Color paintColor = new Color();
 //
@@ -30,8 +30,8 @@ import java.util.List;
 //    /**
 //     * CHILDREN
 //     */
-//    public boolean isEmpty () { return children.size == 0; }
-//    public int size() {return children.size;}
+//    public boolean isEmpty () { return children.size() == 0; }
+//    public int size() {return children.size();}
 //    public <ELEMENT extends AbstractElement> ELEMENT childAt(int index) {
 //        if (index < 0 || index >= size()) return null;
 //        return (ELEMENT) children.get(index);
@@ -48,7 +48,7 @@ import java.util.List;
 //        if (index > size()) index = size();
 //
 //        if (parent != null) parent.remove(child);
-//        children.insert(index, child);
+//        children.add(index, child);
 //        child.setParent(this); child.setScene(scene);
 //
 //        if (state.get() == State.ADDED) child.added();
@@ -286,112 +286,4 @@ import java.util.List;
 //        buf.append("children=").append(children.size());
 //        return buf.toString();
 //    }
-//
-//    /**
-//     * BACKGROUND
-//     */
-//    public Element background() {return childAt(0);}
-//    public Element background(final TextureAsset asset) {
-//        return (Element) add(new Element(name + "-BACKGROUND", asset)).toFarthest();
-//    }
-//
-//    public Element foreground() {return childAt(size()-1);}
-//    public Element foreground(final TextureAsset asset) {
-//        return (Element) add(new Element(name + "-FOREGROUND", asset)).toNearest();
-//    }
-//
-////    public Element background() {return background;}
-////    public Element background(final Color background) {
-////        final Pixmap pixmap = new Pixmap((int) width(), (int) height(), Pixmap.Format.RGBA8888);
-////        pixmap.setColor(background);
-////        pixmap.fillRectangle(0, 0, (int) width(), (int) height());
-////        return background(new Texture(pixmap));
-////    }
-////    public Element background(final String background) {
-////        final Texture texture = ResourceManager.getInstance().get(background);
-////        return background(texture);
-////    }
-////    public Element background(final Texture background) {return background(new TextureRegion(background));}
-////    public Element background(final TextureRegion background) {
-////        if (this.background == null) background(new Element(name + " - BACKGROUND"));
-////        this.background.image(background);
-////        return this.background;
-////    }
-////    public Element background(final Element background) {
-////        this.background = background;
-////
-////        final GroupElement parent = background.parent;
-////        if (background.parent == this) return background;
-////        if (parent != null) parent.background = null;
-////        background.setParent(this);
-////        background.setScene(scene);
-////        if (state.get() == State.ADDED) background.added();
-////        if (background.interactive()) interactive(true);
-////
-////        if (this.background.width() == 0 && this.background.height() == 0) {
-////            this.background.size(width, height);
-////        }
-////        return this.background;
-////    }
-////    public void animatedBackground(final String background) {
-////        if (this.background == null) background(new Element(name + " - BACKGROUND"));
-////        if (this.background.animations.containsKey(background)) {
-////            this.currentAnim = getAnim(background);
-////        } else
-////            Gdx.app.error("Animation", "Erreur, le referentiel d'animation ne contient pas la clef :" + background);
-////    }
-////    public void animatedBackground(final BebelAnimation background) {
-////        final String backName = this.name + " - BACKGROUND";
-////        addAnim(backName, background);
-////        animatedBackground(backName);
-////    }
-////
-////    /**
-////     * FOREGROUND
-////     */
-////    public Element foreground() {return foreground;}
-////    public Element foreground(final Color foreground) {
-////        final Pixmap pixmap = new Pixmap((int) width(), (int) height(), Pixmap.Format.RGBA8888);
-////        pixmap.setColor(foreground);
-////        pixmap.fillRectangle(0, 0, (int) width(), (int) height());
-////        return foreground(new Texture(pixmap));
-////    }
-////    public Element foreground(final String foreground) {
-////        final Texture texture = ResourceManager.getInstance().get(foreground);
-////        return foreground(texture);
-////    }
-////    public Element foreground(final Texture foreground) {return foreground(new TextureRegion(foreground));}
-////    public Element foreground(final TextureRegion foreground) {
-////        if (this.foreground == null) foreground(new Element(name + " - FOREGROUND"));
-////        this.foreground.image(foreground);
-////        return this.foreground;
-////    }
-////    public Element foreground(final Element foreground) {
-////        this.foreground = foreground;
-////
-////        final GroupElement parent = foreground.parent;
-////        if (foreground.parent == this) return foreground;
-////        if (parent != null) parent.foreground = null;
-////        foreground.setParent(this);
-////        foreground.setScene(scene);
-////        if (state.get() == State.ADDED) foreground.added();
-////        if (foreground.interactive()) interactive(true);
-////
-////        if (this.foreground.width() == 0 && this.foreground.height() == 0) {
-////            this.foreground.size(width, height);
-////        }
-////        return this.foreground;
-////    }
-////    public void animatedForeground(final String foreground) {
-////        if (this.foreground == null) foreground(new Element(name + " - FOREGROUND"));
-////        if (this.foreground.animations.containsKey(foreground)) {
-////            this.currentAnim = getAnim(foreground);
-////        } else
-////            Gdx.app.error("Animation", "Erreur, le referentiel d'animation ne contient pas la clef :" + foreground);
-////    }
-////    public void animatedForeground(final BebelAnimation foreground) {
-////        final String foreName = name + " - FOREGROUND";
-////        addAnim(foreName, foreground);
-////        animatedForeground(foreName);
-////    }
 //}

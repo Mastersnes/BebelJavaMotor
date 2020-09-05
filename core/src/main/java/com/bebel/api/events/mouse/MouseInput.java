@@ -1,21 +1,26 @@
 package com.bebel.api.events.mouse;
 
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bebel.api.events.SimpleInput;
+
+import static com.badlogic.gdx.utils.Pools.obtain;
 
 /**
  * Evenement de base de la souris
  */
 public class MouseInput extends SimpleInput {
-    public int x, y, pointer, button, scroll, clickNb;
+    public float x, y;
+    public int pointer, button, scroll, clickNb;
 
     public MouseInput(){}
 
-    public int x() {
+    public float x() {
         return x;
     }
 
-    public int y() {
+    public float y() {
         return y;
     }
 
@@ -54,5 +59,15 @@ public class MouseInput extends SimpleInput {
     public void reset() {
         super.reset();
         x = y = pointer = button = scroll = clickNb = -1;
+    }
+
+    /**
+     * Permet de renseigner la position de la sourie dans le viewport
+     */
+    protected Vector2 tmp = new Vector2();
+    public void position(final float x, final float y, final Viewport viewport) {
+        tmp.set(x, y);
+        viewport.unproject(tmp);
+        this.x = tmp.x; this.y = tmp.y;
     }
 }

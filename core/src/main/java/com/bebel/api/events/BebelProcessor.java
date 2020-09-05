@@ -65,7 +65,7 @@ public class BebelProcessor implements InputProcessor {
     protected void dispatchMouse(final MouseInputType type) {
         mouse.set(keysDown);
         final GroupElement root = scene.getRoot();
-        final EventableElement hitLayer = root.hitTest(this.scratch.set(mouse.x, root.height() - mouse.y));
+        final EventableElement hitLayer = root.hitTest(this.scratch.set(mouse.x, mouse.y));
         if (hitLayer != null) {
             if (type == DOWN) {
                 if (mouse.isLeft() && !scene.isFocus(hitLayer)) {
@@ -164,7 +164,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
-        mouse.x = x; mouse.y = y;
+        mouse.position(x, y, scene.getViewport());
         mouse.pointer = pointer; mouse.button = button;
         dispatchMouse(DOWN);
         return true;
@@ -172,7 +172,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
-        mouse.x = x; mouse.y = y;
+        mouse.position(x, y, scene.getViewport());
         mouse.pointer = pointer; mouse.button = button;
         dispatchMouse(UP);
         return true;
@@ -180,7 +180,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean touchDragged(int x, int y, int pointer) {
-        mouse.x = x; mouse.y = y;
+        mouse.position(x, y, scene.getViewport());
         mouse.pointer = pointer;
         dispatchMouse(DRAG);
         return true;
@@ -188,7 +188,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int x, int y) {
-        mouse.x = x; mouse.y = y;
+        mouse.position(x, y, scene.getViewport());
         dispatchMouse(MOVE);
         return true;
     }
