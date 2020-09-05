@@ -60,6 +60,7 @@ public class GroupElement extends Element {
         if (index >= children.size) children.add(element);
         else children.insert(index, element);
         element.setParent(this); element.setScene(scene);
+        element.added();
         if (childrenChanged != null) childrenChanged.emit(true);
         if (element instanceof MovableElement) {
             final MovableElement te = (MovableElement) element;
@@ -76,6 +77,7 @@ public class GroupElement extends Element {
         if (!children.removeValue(element, true)) return null;
         else {
             if (scene != null) scene.unfocus(element);
+            element.removed();
             element.setParent(null); element.setScene(null);
             if (childrenChanged != null) childrenChanged.emit(false);
             return element;
@@ -85,8 +87,9 @@ public class GroupElement extends Element {
         final SnapshotArray<AbstractElement> children = new SnapshotArray<>(this.children);
         this.children.clear();
         for(final AbstractElement child : children.begin()) {
-            if (child == null) continue;
+            if (child == null || !child.isAdded()) continue;
             child.setScene(null); child.setParent(null);
+            child.removed();
         }
         children.end();
 
@@ -97,7 +100,7 @@ public class GroupElement extends Element {
     public <ELEMENT extends AbstractElement> ELEMENT find(final String name) {
         try {
             for (final AbstractElement child : children.begin()) {
-                if (child == null) continue;
+                if (child == null || !child.isAdded()) continue;
                 if (StringUtils.equals(child.name, name)) return (ELEMENT) child;
             }
         }finally {
@@ -105,7 +108,7 @@ public class GroupElement extends Element {
         }
         try {
             for (final AbstractElement child : children.begin()) {
-                if (child == null) continue;
+                if (child == null || !child.isAdded()) continue;
                 if (child instanceof GroupElement) {
                     final ELEMENT element = ((GroupElement) child).find(name);
                     if (element != null) return element;
@@ -121,7 +124,7 @@ public class GroupElement extends Element {
     public void setScene(BebelScene scene) {
         super.setScene(scene);
         for (final AbstractElement child : children.begin()) {
-            if (child == null) continue;
+            if (child == null || !child.isAdded()) continue;
             child.setScene(scene);
         }
         children.end();
@@ -170,7 +173,7 @@ public class GroupElement extends Element {
 
     protected void checkSize() {
         for(final AbstractElement child : children.begin()) {
-            if (child == null) continue;
+            if (child == null || !child.isAdded()) continue;
             if (child instanceof MovableElement) {
                 final MovableElement te = (MovableElement) child;
                 if (te.fitContent) {
@@ -272,7 +275,7 @@ public class GroupElement extends Element {
     public boolean update(float delta) {
         super.update(delta);
         for (final AbstractElement child : children.begin()) {
-            if (child == null) continue;
+            if (child == null || !child.isAdded()) continue;
             child.update(delta);
         }
         children.end();

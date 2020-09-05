@@ -23,13 +23,7 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
 
     public AbstractElement(final String name) {
         this.name = name;
-        setFlag(Flag.VISIBLE, true);
-        onDisposed(new Slot<AbstractElement>() {
-            @Override
-            public void onEmit(AbstractElement layer) {
-                layer.dispose();
-            }
-        });
+        visible(true);
     }
 
     public String name() {return name;}
@@ -50,6 +44,9 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
         if (parent != null) parent.remove(this);
         return this;
     }
+
+    @Override
+    public void dispose() {disposed();}
 
     /**
      * Envoi l'element plus pret dans la pile
@@ -117,11 +114,12 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     public enum State {REMOVED, ADDED, DISPOSED}
     protected final ValueView<State> state = Value.create(State.REMOVED);
 
+    public boolean isDisposed() {return state.get() == State.DISPOSED;}
+    public boolean isAdded() {return state.get() == State.ADDED;}
+    public boolean isRemoved() {return state.get() == State.REMOVED;}
+
     protected void setState(State state) {
         ((Value<State>) this.state).update(state);
-    }
-    public boolean isDisposed() {
-        return state.get() == State.DISPOSED;
     }
 
     protected AbstractElement onState(final State tgtState, final Signal.Listener<AbstractElement> action) {
@@ -150,42 +148,26 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     protected void removed() {
         setState(State.REMOVED);
     }
+    protected void disposed() {setState(State.DISPOSED);}
 
     /**
      * Flags
      */
-    enum Flag {
-        VISIBLE(1 << 0), INTERACTIVE(1 << 1),
-        XFDIRTY(1 << 2), ODIRTY(1 << 3);
-        public final int bitmask;
-        Flag(int bitmask) {
-            this.bitmask = bitmask;
-        }
-    }
-    protected int flags;
+    protected boolean visible, interactive;
 
-    protected boolean isSet(Flag flag) {
-        return (flags & flag.bitmask) != 0;
-    }
-    protected AbstractElement setFlag(Flag flag, boolean active) {
-        if (active) flags |= flag.bitmask;
-        else flags &= ~flag.bitmask;
-        return this;
-    }
-
-    public boolean visible() {return isSet(Flag.VISIBLE);}
-    public AbstractElement visible(boolean visible) { return setFlag(Flag.VISIBLE, visible);}
+    public boolean visible() {return visible;}
+    public AbstractElement visible(boolean visible) { this.visible = visible; return this;}
     public AbstractElement show() {return visible(true);}
     public AbstractElement hide() {return visible(false);}
 
     public boolean interactive() {
-        return isSet(Flag.INTERACTIVE);
+        return interactive;
     }
     public AbstractElement interactive(boolean interactive) {
         if (interactive() != interactive) {
             // if we're being made interactive, active our setParent as well, if we have one
             if (interactive && parent != null) parent.interactive(interactive);
-            setFlag(Flag.INTERACTIVE, interactive);
+            this.interactive = interactive;
         }
         return this;
     }
