@@ -73,6 +73,13 @@ public class GroupElement extends Element {
         return element;
     }
 
+    public <ELEMENT extends AbstractElement> ELEMENT background(final ELEMENT element) {
+        return insert(0, element);
+    }
+    public <ELEMENT extends AbstractElement> ELEMENT foreground(final ELEMENT element) {
+        return add(element);
+    }
+
     public <ELEMENT extends AbstractElement> ELEMENT remove(final ELEMENT element) {
         if (!children.removeValue(element, true)) return null;
         else {
@@ -214,6 +221,7 @@ public class GroupElement extends Element {
         oldBatchColor.set(batch.getColor());
 
         for (final AbstractElement child : children.begin()) {
+            if (child == null || !child.isAdded()) continue;
             if (!(child instanceof DrawableElement)) continue;
             batch.getTransformMatrix().set(oldBatchTransform);
             batch.getColor().set(oldBatchColor);
@@ -232,6 +240,7 @@ public class GroupElement extends Element {
         if (shader != null) shaders.add(shader);
 
         for (final AbstractElement child : children.begin()) {
+            if (child == null || !child.isAdded()) continue;
             if (!(child instanceof DrawableElement)) continue;
             final DrawableElement drawableChild = (DrawableElement) child;
             if (drawableChild.shader != null) shaders.add(drawableChild.shader);
@@ -255,6 +264,7 @@ public class GroupElement extends Element {
         try {
             final AbstractElement[] children = this.children.begin();
             for (int ii = children.length - 1; ii >= 0; ii--) {
+                if (children[ii] == null || !children[ii].isAdded()) continue;
                 if (!(children[ii] instanceof EventableElement)) continue;
                 final EventableElement child = (EventableElement) children[ii];
                 if (!child.interactive()) continue; // ignore non-interactive children

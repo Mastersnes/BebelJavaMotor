@@ -19,6 +19,7 @@ public abstract class EventableElement extends AnimableElement {
 
     @Override
     public final void create() {
+        super.create();
         createImpl();
         makeEvents();
     }

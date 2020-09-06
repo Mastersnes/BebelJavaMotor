@@ -10,11 +10,17 @@ import com.bebel.core.resources.Assets;
 public class Coffre2 extends Coffre {
     protected Element background;
 
+    public Coffre2() {
+        super();
+        name("Coffre2");
+    }
+
     @Override
     protected void createImpl() {
         super.createImpl();
         removeAll();
         background = add(new Element("BACK", Assets.Coffre.BACKGROUND));
+        add(new Element("FORE", Assets.Coffre.FOREGROUND));
     }
 
     @Override

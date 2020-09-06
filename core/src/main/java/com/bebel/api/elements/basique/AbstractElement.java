@@ -82,7 +82,7 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
         return name();
     }
 
-    public void create() {}
+    public void create() {created = true;}
 
     /**
      * DEBUG
