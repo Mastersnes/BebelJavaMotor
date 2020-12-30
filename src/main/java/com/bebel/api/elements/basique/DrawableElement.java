@@ -14,7 +14,13 @@ import com.bebel.api.Global;
 import com.bebel.api.resources.ResourceManager;
 import com.bebel.api.resources.assets.TextureAsset;
 import com.bebel.api.shaders.AbstractShader;
+import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.Sys;
 import pythagoras.f.MathUtil;
+
+import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.stream.IntStream;
 
 /**
  * Represente un element transformable et dessinable
@@ -111,12 +117,22 @@ public class DrawableElement extends TransformableElement {
                     width, height);
         }
     }
+
+    protected boolean firstTime = true;
     protected void draw(final SpriteBatch batch, final TextureRegion image) {
         if (image != null) {
             batch.draw(image,
                     0, 0,
                     width, height);
         }
+    }
+
+    @Override
+    public boolean update(float delta) {
+        if (shader != null) {
+            shader.update(delta);
+        }
+        return super.update(delta);
     }
 
     /**
@@ -162,6 +178,7 @@ public class DrawableElement extends TransformableElement {
      */
     public void setShader(final AbstractShader shader) {
         this.shader = shader;
+        shader.begin(this);
     }
 
     public AbstractShader getShader() {
@@ -172,7 +189,7 @@ public class DrawableElement extends TransformableElement {
         final AbstractShader shader = getShader();
         if (shader != null) {
             batch.setShader(shader.shader());
-            shader.bind(this);
+            shader.refresh();
         }
     }
 

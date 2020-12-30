@@ -109,9 +109,6 @@ public class LightShader extends AbstractShader {
 
     @Override
     protected void begin() {
-        //setup default uniforms
-        shader.begin();
-
         //our normal map
         shader.setUniformi("u_normals", 1); //GL_TEXTURE1
 
@@ -119,9 +116,6 @@ public class LightShader extends AbstractShader {
         shader.setUniformf("LightColor", LIGHT_COLOR.x, LIGHT_COLOR.y, LIGHT_COLOR.z, LIGHT_INTENSITY);
         shader.setUniformf("AmbientColor", AMBIENT_COLOR.x, AMBIENT_COLOR.y, AMBIENT_COLOR.z, AMBIENT_INTENSITY);
         shader.setUniformf("Falloff", FALLOFF);
-
-        //LibGDX likes us to end the shader program
-        shader.end();
     }
 
     @Override
@@ -148,7 +142,7 @@ public class LightShader extends AbstractShader {
     }
 
     @Override
-    public void bind(final DrawableElement layer) {
+    public void refresh() {
 //        final Texture image = layer.getImage();
 //        final Texture normal = layer.getNormal();
 //
