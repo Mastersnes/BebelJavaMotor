@@ -26,6 +26,7 @@ public abstract class AbstractShader implements Updatable {
                 .append("vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));").append("\n")
                 .append("vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));").append("\n")
                 .append("float d = q.x - min(q.w, q.y);").append("\n")
+                .append("float e = 1.0e-10;").append("\n")
                 .append("return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);").append("\n")
             .append("}").append("\n")
             .append("\n")
@@ -37,25 +38,94 @@ public abstract class AbstractShader implements Updatable {
             .append("\n").toString();
 
     protected final String IMPORT_UTILS = new StringBuilder()
-            .append("vec3 circle(in vec2 position, in float rayon){").append("\n")
-                .append("vec2 p = (gl_FragCoord.xy / u_resolution.xy) - position;").append("\n")
-                .append("float len = length(p);").append("\n")
-                .append("return step(r, vec3(len));").append("\n")
+            .append("vec3 circle (in vec2 position, in float rayon, vec3 color) {").append("\n")
+                .append("vec2 repere = gl_FragCoord.xy/u_resolution.xy;").append("\n")
+                .append("vec2 pos = repere - position;").append("\n")
+                .append("float result = step(rayon, length(pos));").append("\n")
+                .append("return (1.0-result)*color;").append("\n")
             .append("}").append("\n")
             .append("\n")
-            .append("vec3 tint(in vec3 c ){").append("\n")
-                .append("return baseColor * mix(element, baseColor, tintColor);").append("\n")
-            .append("}")
+            .append("vec3 smoothCircle (in vec2 position, in float rayon, float flou, vec3 color) {").append("\n")
+                .append("vec2 repere = gl_FragCoord.xy/u_resolution.xy;").append("\n")
+                .append("vec2 pos = repere - position;").append("\n")
+                .append("float result = smoothstep(rayon-flou, rayon+flou, length(pos));").append("\n")
+                .append("return (1.0-result)*color;").append("\n")
+            .append("}").append("\n")
+            .append("vec3 replace(vec3 color1, vec3 color2, vec3 color) {").append("\n")
+                .append("if (color == color1) return color2;").append("\n")
+                .append("else return color;").append("\n")
+            .append("}").append("\n")
             .append("\n").toString();
 
+    private final String SUPER_VERT = new StringBuilder()
+            .append("attribute vec4 " + ShaderProgram.POSITION_ATTRIBUTE + ";").append("\n")
+            .append("attribute vec4 " + ShaderProgram.COLOR_ATTRIBUTE + ";").append("\n")
+            .append("attribute vec2 " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;").append("\n")
+
+            .append("uniform mat4 u_projTrans;").append("\n")
+            .append("varying vec4 v_color;").append("\n")
+            .append("varying vec2 v_texCoords;").append("\n")
+            .append(VERT())
+            .append("\n").toString();
+
+    private final String SUPER_FRAG = new StringBuilder()
+            .append("#ifdef GL_ES").append("\n")
+                .append("precision mediump float;").append("\n")
+            .append("#endif").append("\n")
+
+            .append("varying vec4 v_color;").append("\n")
+            .append("varying vec2 v_texCoords;").append("\n")
+            .append("uniform sampler2D u_texture;").append("\n")
+            .append("uniform mat4 u_projTrans;").append("\n")
+
+            .append("uniform vec2 u_resolution;").append("\n")
+            .append("uniform vec2 u_mouse;").append("\n")
+            .append("uniform float u_time;").append("\n")
+
+            .append(IMPORT_UTILS).append("\n")
+            .append(IMPORT_RGB).append("\n")
+            .append(IMPORT_HSB).append("\n")
+
+            .append(FRAG())
+            .append("\n").toString();
+
+    protected String VERT() {
+        return new StringBuilder()
+                .append("void main() {").append("\n")
+                    .append("v_color = " + ShaderProgram.COLOR_ATTRIBUTE + ";").append("\n")
+                    .append("v_texCoords = " + ShaderProgram.TEXCOORD_ATTRIBUTE + "0;").append("\n")
+                    .append("gl_Position =  u_projTrans * " + ShaderProgram.POSITION_ATTRIBUTE + ";").append("\n")
+                .append("}").toString();
+    }
+
+    protected String FRAG() {
+        return new StringBuilder()
+                .append("void main() {").append("\n")
+                    .append("vec4 texColor = texture2D(u_texture, v_texCoords);").append("\n")
+                    .append("gl_FragColor = texColor * v_color;").append("\n")
+                .append("}").toString();
+    }
+
+    public AbstractShader() {
+        init(SUPER_VERT, SUPER_FRAG);
+    }
     public AbstractShader(final String vert, final String frag) {
+        init(vert, frag);
+    }
+
+    private void init(final String vert, final String frag) {
         ShaderProgram.pedantic = false;
 
         shader = new ShaderProgram(vert, frag);
 
         //ensure it compiled
-        if (!shader.isCompiled())
-            throw new GdxRuntimeException("Could not compile shader: " + shader.getLog());
+        if (!shader.isCompiled()) {
+            final StringBuilder err = new StringBuilder("ERROR, Could not compile shader")
+                    .append("CAUSE : ").append(shader.getLog()).append("\n\n")
+                    .append("VERT : ").append(SUPER_VERT).append("\n\n");
+
+            throw new GdxRuntimeException(err.toString());
+        }
         //print any warnings
         if (shader.getLog().length() != 0)
             System.out.println(shader.getLog());
