@@ -3,7 +3,7 @@ package com.bebel.api.shaders;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.bebel.api.contrats.Updatable;
-import com.bebel.api.elements.basique.DrawableElement;
+import com.bebel.api.elements.basique.AbstractElement;
 import com.bebel.api.elements.basique.EventableElement;
 
 /**
@@ -11,7 +11,7 @@ import com.bebel.api.elements.basique.EventableElement;
  */
 public abstract class AbstractShader implements Updatable {
     protected ShaderProgram shader;
-    protected DrawableElement layer;
+    protected AbstractElement layer;
     protected float time;
 
     protected final String IMPORT_RGB = new StringBuilder()
@@ -38,18 +38,40 @@ public abstract class AbstractShader implements Updatable {
             .append("\n").toString();
 
     protected final String IMPORT_UTILS = new StringBuilder()
-            .append("vec3 circle (in vec2 position, in float rayon, vec3 color) {").append("\n")
+            .append("float circle (in vec2 position, in float rayon) {").append("\n")
                 .append("vec2 repere = gl_FragCoord.xy/u_resolution.xy;").append("\n")
                 .append("vec2 pos = repere - position;").append("\n")
                 .append("float result = step(rayon, length(pos));").append("\n")
-                .append("return (1.0-result)*color;").append("\n")
+                .append("return result;").append("\n")
+            .append("}").append("\n")
+            .append("vec3 circle (in vec2 position, in float rayon, vec3 color) {").append("\n")
+                .append("return (1.0-circle(position, rayon))*color;").append("\n")
             .append("}").append("\n")
             .append("\n")
-            .append("vec3 smoothCircle (in vec2 position, in float rayon, float flou, vec3 color) {").append("\n")
+            .append("vec3 smoothCircle (in vec2 position, in float rayon, float flou) {").append("\n")
                 .append("vec2 repere = gl_FragCoord.xy/u_resolution.xy;").append("\n")
                 .append("vec2 pos = repere - position;").append("\n")
                 .append("float result = smoothstep(rayon-flou, rayon+flou, length(pos));").append("\n")
-                .append("return (1.0-result)*color;").append("\n")
+                .append("return result;").append("\n")
+            .append("}").append("\n")
+            .append("vec3 smoothCircle (in vec2 position, in float rayon, float flou, vec3 color) {").append("\n")
+                .append("return (1.0-smoothCircle(position, rayon))*color;").append("\n")
+            .append("}").append("\n")
+            .append("vec3 rect(in vec2 position, in vec2 size, in vec3 color) {").append("\n")
+                .append("vec2 repere = gl_FragCoord.xy/u_resolution.xy;").append("\n")
+                .append("vec2 bl = step(position, repere);").append("\n")
+                .append("float result = bl.x * bl.y;").append("\n")
+                .append("vec2 tr = step(1.0-size-position,1.0-repere);").append("\n")
+                .append("result *= tr.x * tr.y;").append("\n")
+                .append("return result*color;").append("\n")
+            .append("}").append("\n")
+            .append("vec3 smoothRect(in vec2 position, in vec2 size, in float flou, in vec3 color) {").append("\n")
+                .append("vec2 repere = gl_FragCoord.xy/u_resolution.xy;").append("\n")
+                .append("vec2 bl = smoothstep(position-flou, position+flou, repere);").append("\n")
+                .append("float result = bl.x * bl.y;").append("\n")
+                .append("vec2 tr = smoothstep(1.0-size-position-flou, 1.0-size-position+flou,1.0-repere);").append("\n")
+                .append("result *= tr.x * tr.y;").append("\n")
+                .append("return result*color;").append("\n")
             .append("}").append("\n")
             .append("vec3 replace(vec3 color1, vec3 color2, vec3 color) {").append("\n")
                 .append("if (color == color1) return color2;").append("\n")
@@ -134,7 +156,7 @@ public abstract class AbstractShader implements Updatable {
     /**
      * Permet de commencer le shader en lui attribuant les constantes et operations de base
      */
-    public final void begin(final DrawableElement layer) {
+    public final void begin(final AbstractElement layer) {
         shader.begin();
         this.layer = layer;
         if (layer instanceof EventableElement) {

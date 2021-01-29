@@ -1,11 +1,7 @@
 package com.bebel.api.actions.organisation;
 
-import com.badlogic.gdx.Gdx;
 import com.bebel.api.actions.AutomatedAction;
 import react.RList;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Action executant d'autre actions de facon parallel

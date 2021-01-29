@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bebel.api.actions.ActionManager;
 import com.bebel.api.elements.basique.AbstractElement;
-import com.bebel.api.elements.basique.Element;
 import com.bebel.api.elements.basique.EventableElement;
 import com.bebel.api.elements.basique.GroupElement;
 import com.bebel.api.events.BebelProcessor;
@@ -19,9 +18,9 @@ import org.lwjgl.opengl.Display;
 import static com.bebel.api.Global.batch;
 
 /**
- * Scene de base de l'API Bebel
+ * Ecran de base de l'API Bebel
  */
-public abstract class BebelScene implements Screen, Disposable {
+public abstract class BebelScreen implements Screen, Disposable {
     protected BebelGame game;
     protected BebelProcessor input;
 
@@ -29,13 +28,13 @@ public abstract class BebelScene implements Screen, Disposable {
     protected Viewport viewport;
 
     protected GroupElement root;
-    protected EventableElement focus = Element.EMPTY;
+    protected EventableElement focus = EventableElement.EMPTY;
     protected boolean created;
 
-    public BebelScene() {
+    public BebelScreen() {
         this(Display.getWidth(), Display.getHeight());
     }
-    public BebelScene(final float worldW, final float worldH) {
+    public BebelScreen(final float worldW, final float worldH) {
         setCamera(new OrthographicCamera());
         getCamera(OrthographicCamera.class)
                 .setToOrtho(false, Display.getWidth(), Display.getHeight());
@@ -45,7 +44,7 @@ public abstract class BebelScene implements Screen, Disposable {
         game = Global.game;
 
         root = new GroupElement("root", Display.getWidth(), Display.getHeight());
-        root.setScene(this);
+        root.setScreen(this);
         root.create();
 
         input = new BebelProcessor(this, false);
@@ -100,7 +99,7 @@ public abstract class BebelScene implements Screen, Disposable {
         return (VIEWPORT) viewport;
     }
 
-    public void unfocus() {this.focus = Element.EMPTY;}
+    public void unfocus() {this.focus = EventableElement.EMPTY;}
     public void unfocus(AbstractElement focus) {if (this.focus == focus) unfocus();}
     public void focus(EventableElement focus) {
         if (focus == root) unfocus();
@@ -151,6 +150,10 @@ public abstract class BebelScene implements Screen, Disposable {
     @Override
     public void resume() {
         Gdx.input.setInputProcessor(input);
+    }
+
+    public void alert(final String texte) {
+
     }
 
     public void activeClickChecker() {

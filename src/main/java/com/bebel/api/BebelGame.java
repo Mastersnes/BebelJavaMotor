@@ -16,7 +16,7 @@ import java.util.Map;
  * Classe de base de l'API Bebel
  */
 public abstract class BebelGame extends Game implements Disposable {
-    private Map<String, BebelScene> screens = new HashMap<>();
+    private Map<String, BebelScreen> screens = new HashMap<>();
 
     @Override
     public void create() {
@@ -32,7 +32,7 @@ public abstract class BebelGame extends Game implements Disposable {
      *
      * @param screenName
      */
-    public void addScreen(final String screenName, final BebelScene screen) {
+    public void addScreen(final String screenName, final BebelScreen screen) {
         screens.put(screenName, screen);
     }
 

@@ -1,10 +1,12 @@
 package com.bebel.api.elements.basique;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
-import com.bebel.api.BebelScene;
+import com.bebel.api.BebelScreen;
 import com.bebel.api.actions.temporal.BindAction;
 import com.bebel.api.contrats.Updatable;
 import com.bebel.api.events.BebelProcessor;
+import com.bebel.api.shaders.AbstractShader;
 import react.*;
 
 import java.util.HashMap;
@@ -16,7 +18,8 @@ import java.util.Map;
 public abstract class AbstractElement implements Closeable, Disposable, Updatable {
     protected String name;
     protected GroupElement parent;
-    protected BebelScene scene;
+    protected AbstractShader shader;
+    protected BebelScreen screen;
     protected BebelProcessor input;
     protected boolean debug, created;
 
@@ -34,10 +37,10 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     public GroupElement parent() {return parent;}
     public void setParent(GroupElement parent) {this.parent = parent;}
 
-    public BebelScene scene() {return scene;}
-    public void setScene(BebelScene scene) {
-        this.scene = scene;
-        if (scene != null) this.input = scene.input();
+    public BebelScreen screen() {return screen;}
+    public void setScreen(BebelScreen screen) {
+        this.screen = screen;
+        if (screen != null) this.input = screen.input();
     }
 
     public AbstractElement remove() {
@@ -142,7 +145,7 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     }
 
     protected void added() {
-        if (isDisposed()) throw new IllegalStateException("Illegal to use isDisposed layer: " + this);
+        if (isDisposed()) throw new IllegalStateException("Illegal to use disposed layer: " + this);
         setState(State.ADDED);
     }
     protected void removed() {
@@ -170,6 +173,26 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
             this.interactive = interactive;
         }
         return this;
+    }
+
+    /**
+     * SHADER
+     */
+    public void setShader(final AbstractShader shader) {
+        this.shader = shader;
+        shader.begin(this);
+    }
+
+    public AbstractShader getShader() {
+        if (parent == null || shader != null) return shader;
+        else return parent.getShader();
+    }
+    protected void processShader(final SpriteBatch batch) {
+        final AbstractShader shader = getShader();
+        if (shader != null) {
+            batch.setShader(shader.shader());
+            shader.refresh();
+        }
     }
 
     /**

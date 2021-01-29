@@ -10,9 +10,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Represente un element animable et pouvant gerer des evenements
+ * Represente un element pouvant gerer des evenements
  */
-public abstract class EventableElement extends AnimableElement {
+public abstract class EventableElement extends TransformableElement {
+    public static EventableElement EMPTY = new EventableElement("") {
+    };
     interface HitTester { EventableElement hitTest(EventableElement layer, Vector2 p);}
 
     public EventableElement(String name) {super(name);}
@@ -117,6 +119,6 @@ public abstract class EventableElement extends AnimableElement {
     }
 
     public boolean isFocus() {
-        return scene.isFocus(this);
+        return screen.isFocus(this);
     }
 }

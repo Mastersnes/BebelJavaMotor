@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import react.RMap;
 
 /**
- * Represente un element dessinable et animable
+ * Represente un element animable
  */
 public class AnimableElement extends DrawableElement {
     protected BebelAnimation currentAnim;
@@ -22,7 +22,7 @@ public class AnimableElement extends DrawableElement {
         });
     }
 
-    public AnimableElement(String name) {super(name);}
+    public AnimableElement(final String name, final float w, final float h) {super(name, null, w, h);}
 
     public BebelAnimation getAnim(final String name) {
         if (!animations.containsKey(name)) {

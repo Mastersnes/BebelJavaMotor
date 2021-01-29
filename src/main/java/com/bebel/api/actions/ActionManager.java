@@ -10,7 +10,6 @@ import com.bebel.api.elements.basique.AbstractElement;
 import com.bebel.api.elements.basique.DrawableElement;
 import com.bebel.api.elements.basique.MovableElement;
 import com.bebel.api.elements.basique.TransformableElement;
-import com.bebel.api.elements.complex.Personnage;
 import react.RList;
 
 /**
@@ -64,7 +63,7 @@ public class ActionManager {
      * Actions classiques
      */
     public static MoveAction move(final MovableElement target) {return action(MoveAction.class, target);}
-    public static WalkAction walk(final Personnage target) {return action(WalkAction.class, target);}
+//    public static WalkAction walk(final Personnage target) {return action(WalkAction.class, target);}
     public static ScaleAction scale(final TransformableElement target) {return action(ScaleAction.class, target);}
     public static RotateAction rotate(final TransformableElement target) {return action(RotateAction.class, target);}
     public static ColorAction color(final DrawableElement target) {return action(ColorAction.class, target);}

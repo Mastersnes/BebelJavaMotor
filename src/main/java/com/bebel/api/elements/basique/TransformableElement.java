@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 /**
- * Represente un element deplacable et redimensionnable pouvant être transformé
+ * Represente un element pouvant être transformé
  */
 public abstract class TransformableElement extends MovableElement {
     public static int CENTERX = (1 << 3), CENTERY = (1 << 3);

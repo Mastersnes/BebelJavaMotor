@@ -1,6 +1,5 @@
 package com.bebel.api.elements.basique;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -8,9 +7,12 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.SnapshotArray;
-import com.bebel.api.BebelScene;
+import com.bebel.api.BebelScreen;
+import com.bebel.api.resources.assets.AbstractAsset;
+import com.bebel.api.resources.assets.TextureAsset;
 import com.bebel.api.shaders.AbstractShader;
 import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.opengl.Display;
 import react.Signal;
 
 import java.util.ArrayList;
@@ -19,14 +21,16 @@ import java.util.List;
 /**
  * Represente un element dessinable regroupant d'autres elements
  */
-public class GroupElement extends Element {
+public class GroupElement extends DrawableElement {
     private final SnapshotArray<AbstractElement> children = new SnapshotArray(true, 4, AbstractElement.class);
     private final Matrix4 oldBatchTransform = new Matrix4();
     private final Color oldBatchColor = new Color();
+
+    private AbstractElement background = null, foreground = null;
     private Signal<Boolean> childrenChanged;
 
-    public GroupElement(final String name) {super(name);}
-    public GroupElement(final String name, int w, int h) {super(name, w, h);}
+    public GroupElement(final String name) {this(name, Display.getWidth(), Display.getHeight());}
+    public GroupElement(final String name, float w, float h) {super(name, null, w, h);}
 
     @Override
     protected void createImpl() {
@@ -44,9 +48,43 @@ public class GroupElement extends Element {
     }
 
     /**
+     * Permet de debugguer l'ensemble des elements de la liste
+     * @param elements
+     */
+    public void debug(final EventableElement... elements) {
+        for (final EventableElement element : elements) {
+            element.debugMe();
+        }
+    }
+
+    /**
      * CHILDREN
      */
-    public <ELEMENT extends AbstractElement> ELEMENT add(final ELEMENT element) {return insert(children.size, element);}
+    public <ELEMENT extends AbstractElement> ELEMENT background(final TextureAsset asset) {
+        return (ELEMENT) background(new DrawableElement("background", asset));
+    }
+    public <ELEMENT extends AbstractElement> ELEMENT background(final ELEMENT element) {
+        if (background != null) remove(background);
+        background = null;
+        background = insert(0, element);
+        return element;
+    }
+    public <ELEMENT extends AbstractElement> ELEMENT foreground(final TextureAsset asset) {
+        return (ELEMENT) foreground(new DrawableElement("foreground", asset));
+    }
+    public <ELEMENT extends AbstractElement> ELEMENT foreground(final ELEMENT element) {
+        if (foreground != null) remove(foreground);
+        foreground = null;
+        foreground = add(element);
+        return element;
+    }
+    public <ELEMENT extends AbstractElement> ELEMENT add(final String name, final TextureAsset asset) {
+        return (ELEMENT) add(new DrawableElement(name, asset));
+    }
+    public <ELEMENT extends AbstractElement> ELEMENT add(final ELEMENT element) {
+        if (foreground != null) return addBefore(foreground, element);
+        else return insert(children.size, element);
+    }
     public <ELEMENT extends AbstractElement> ELEMENT addBefore(final AbstractElement elementBefore, final ELEMENT newElement) {
         int index = children.indexOf(elementBefore, true);
         return insert(index, newElement);
@@ -59,7 +97,7 @@ public class GroupElement extends Element {
         element.remove();
         if (index >= children.size) children.add(element);
         else children.insert(index, element);
-        element.setParent(this); element.setScene(scene);
+        element.setParent(this); element.setScreen(screen);
         element.added();
         if (childrenChanged != null) childrenChanged.emit(true);
         if (element instanceof MovableElement) {
@@ -73,19 +111,12 @@ public class GroupElement extends Element {
         return element;
     }
 
-    public <ELEMENT extends AbstractElement> ELEMENT background(final ELEMENT element) {
-        return insert(0, element);
-    }
-    public <ELEMENT extends AbstractElement> ELEMENT foreground(final ELEMENT element) {
-        return add(element);
-    }
-
     public <ELEMENT extends AbstractElement> ELEMENT remove(final ELEMENT element) {
         if (!children.removeValue(element, true)) return null;
         else {
-            if (scene != null) scene.unfocus(element);
+            if (screen != null) screen.unfocus(element);
             element.removed();
-            element.setParent(null); element.setScene(null);
+            element.setParent(null); element.setScreen(null);
             if (childrenChanged != null) childrenChanged.emit(false);
             return element;
         }
@@ -95,7 +126,7 @@ public class GroupElement extends Element {
         this.children.clear();
         for(final AbstractElement child : children.begin()) {
             if (child == null || !child.isAdded()) continue;
-            child.setScene(null); child.setParent(null);
+            child.setScreen(null); child.setParent(null);
             child.removed();
         }
         children.end();
@@ -128,11 +159,11 @@ public class GroupElement extends Element {
     }
 
     @Override
-    public void setScene(BebelScene scene) {
-        super.setScene(scene);
+    public void setScreen(BebelScreen screen) {
+        super.setScreen(screen);
         for (final AbstractElement child : children.begin()) {
             if (child == null || !child.isAdded()) continue;
-            child.setScene(scene);
+            child.setScreen(screen);
         }
         children.end();
     }
@@ -204,9 +235,9 @@ public class GroupElement extends Element {
         super.paintImpl(batch);
 
         boolean alreadyPainted = false;
-        if (rotation == 0 && overflow == Overflow.HIDDEN) {
+        if (rotation == 0 && overflow == AbstractElement.Overflow.HIDDEN) {
             area.set(maxX(), maxY(), minWidth(0), minHeight(0));
-            ScissorStack.calculateScissors(scene.getCamera(), batch.getTransformMatrix(), area, scissors);
+            ScissorStack.calculateScissors(screen.getCamera(), batch.getTransformMatrix(), area, scissors);
 
             if (ScissorStack.pushScissors(scissors)) {
                 alreadyPainted = true; paintClip(batch);

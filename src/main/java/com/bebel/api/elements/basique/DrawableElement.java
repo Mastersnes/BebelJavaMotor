@@ -13,28 +13,28 @@ import com.badlogic.gdx.math.Matrix4;
 import com.bebel.api.Global;
 import com.bebel.api.resources.ResourceManager;
 import com.bebel.api.resources.assets.TextureAsset;
-import com.bebel.api.shaders.AbstractShader;
-import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.Sys;
 import pythagoras.f.MathUtil;
 
-import java.nio.ByteBuffer;
-import java.util.List;
-import java.util.stream.IntStream;
-
 /**
- * Represente un element transformable et dessinable
+ * Represente un element dessinable
  */
-public class DrawableElement extends TransformableElement {
-    protected AbstractShader shader;
+public class DrawableElement extends EventableElement {
     protected TextureRegion image;
     protected boolean flipX, flipY;
 
     protected Color tint = Color.WHITE.cpy();
     protected float alpha = 1;
 
+    public DrawableElement(final String name, final TextureAsset image) {
+        this(name, image, 0, 0);
+        fitContent();
+    }
 
-    public DrawableElement(String name) {super(name);}
+    public DrawableElement(final String name, final TextureAsset image, final float w, final float h) {
+        super(name);
+        if (w > 0 && h > 0) size(w, h);
+        if (image != null) image(image);
+    }
 
     /**
      * DEBUG
@@ -98,7 +98,8 @@ public class DrawableElement extends TransformableElement {
 
     protected void paintImpl(final SpriteBatch batch){
         draw(batch, image);
-        if (this.debug) {
+        if (this instanceof GroupElement) return;
+        if (this.debug || parent.debug) {
             batch.flush();
             final ShapeRenderer shape = Global.shape;
             shape.setProjectionMatrix(batch.getProjectionMatrix());
@@ -172,26 +173,6 @@ public class DrawableElement extends TransformableElement {
     public DrawableElement flip(final boolean x, final boolean y) {image.flip(x, y); return this;}
     public DrawableElement flipX() {image.flip(true, false); return this;}
     public DrawableElement flipY() {image.flip(false, true); return this;}
-
-    /**
-     * SHADER
-     */
-    public void setShader(final AbstractShader shader) {
-        this.shader = shader;
-        shader.begin(this);
-    }
-
-    public AbstractShader getShader() {
-        if (parent == null || shader != null) return shader;
-        else return parent.getShader();
-    }
-    protected void processShader(final SpriteBatch batch) {
-        final AbstractShader shader = getShader();
-        if (shader != null) {
-            batch.setShader(shader.shader());
-            shader.refresh();
-        }
-    }
 
     @Override
     public void dispose() {}
