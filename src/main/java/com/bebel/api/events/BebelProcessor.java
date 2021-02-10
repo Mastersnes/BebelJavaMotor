@@ -105,7 +105,7 @@ public class BebelProcessor implements InputProcessor {
                 key.remove();
         }
         if (whileKeyDown != null && keysDown.size() > 0) {
-            whileKeyDown.emit(key.set(keysDown));
+            whileKeyDown.emit((SimpleInput) key.set(keysDown));
         }
 
         if (hoverLayer != null) hoverLayer.dispatchEvent(HOVER, mouse, bubble);

@@ -31,7 +31,7 @@ public class KeyInput extends SimpleInput {
     }
 
     /**
-     * Retourne vrai si la touche est pressée
+     * Retourne vrai si la derniere touche pressée est "key"
      * @param key
      * @return
      */
@@ -39,23 +39,11 @@ public class KeyInput extends SimpleInput {
         return this.key == key;
     }
 
-    @Override
-    public boolean are(int... keys) {
-        for (int key : keys) {
-            if (this.key != key && !this.keys.contains(key)) return false;
-        }
-        return true;
-    }
-
     public boolean simpleClick() {return clickNb == 1;}
     public boolean doubleClick() {return clickNb == 2;}
+
     public boolean spamClick(final int min) {return clickNb >= min;}
 
-
-    @Override
-    public boolean areAtLeast(int... keys) {
-        return Arrays.asList(keys).contains(key) || super.areAtLeast(keys);
-    }
 
     @Override
     public void reset() {

@@ -20,9 +20,9 @@ public abstract class TransformableElement extends MovableElement {
         super.debugMe();
         input.whileKeyDown(k -> {
             // ROTATION
-            if (k.are(Input.Keys.R)) {
-                if (k.isCtrlDown()) rotate(-1);
-                else rotate(1);
+            if (k.contains(Input.Keys.R)) {
+                if (k.contains(Input.Keys.LEFT)) rotate(-1);
+                else if (k.contains(Input.Keys.RIGHT)) rotate(1);
             }
         });
         input.onKeyDown(k -> {

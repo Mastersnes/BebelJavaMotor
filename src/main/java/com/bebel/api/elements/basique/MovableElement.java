@@ -25,23 +25,32 @@ public abstract class MovableElement extends AbstractElement {
     public void debugMe() {
         super.debugMe();
         input.whileKeyDown(k -> {
-           // POSITION
-           if (k.are(Input.Keys.LEFT)) move(-1, 0);
-           else if (k.are(Input.Keys.RIGHT)) move(1, 0);
-           if (k.are(Input.Keys.UP)) move(0, -1);
-           else if (k.are(Input.Keys.DOWN)) move(0, 1);
+            // POSITION
+            if (k.containsOnlyOneOf(Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.DOWN)) {
+                if (k.contains(Input.Keys.LEFT)) move(-1, 0);
+                else if (k.contains(Input.Keys.RIGHT)) move(1, 0);
+                if (k.contains(Input.Keys.UP)) move(0, -1);
+                else if (k.contains(Input.Keys.DOWN)) move(0, 1);
+            }
 
-           // TAILLE
-           if (k.are(Input.Keys.Q)) resize(-1, 0);
-           else if (k.are(Input.Keys.D)) resize(1, 0);
-           if (k.are(Input.Keys.Z)) resize(0, 1);
-           else if (k.are(Input.Keys.S)) resize(0, -1);
+            //TAILLE
+            if (k.contains(Input.Keys.S)) {
+                if (k.contains(Input.Keys.LEFT)) resize(-1, 0);
+                else if (k.contains(Input.Keys.RIGHT)) resize(1, 0);
+                if (k.contains(Input.Keys.UP)) resize(0, 1);
+                else if (k.contains(Input.Keys.DOWN)) resize(0, -1);
+            }
         });
         input.onKeyDown(k -> {
-            if (k.is(Input.Keys.COMMA)) {
-                Gdx.app.log(name + "-POSITION", x + ", " + relativeY());
-                Gdx.app.log(name + "-TAILLE", width + ", " + height);
-            }
+           if (k.contains(Input.Keys.C)) {
+               if (k.containsOneOf(Input.Keys.UP, Input.Keys.DOWN)) centerY();
+               else if (k.containsOneOf(Input.Keys.LEFT, Input.Keys.RIGHT)) centerX();
+           }
+
+           if (k.is(Input.Keys.COMMA)) {
+               Gdx.app.log(name + "-POSITION", x + ", " + relativeY());
+               Gdx.app.log(name + "-TAILLE", width + ", " + height);
+           }
         });
     }
 
@@ -90,31 +99,47 @@ public abstract class MovableElement extends AbstractElement {
     /**
      * Ajoute un element à une position donnée
      */
-    public void bottomAt(float tx, float ty) {bottomAt(tx, ty, width(), height());}
-    public void bottomAt(float tx, float ty, final float w, final float h) {bottomAt(tx, ty, w, h, R_UP | R_LEFT);}
-    public void bottomAt(float tx, float ty, final int from) {bottomAt(tx, ty, width(), height(), from);}
-    public void bottomAt(float tx, float ty, final float w, final float h, final int from) {
-        size(w, h); position(tx, ty - height(), from);
+    public MovableElement bottomAt(float tx, float ty) {return bottomAt(tx, ty, width(), height());}
+    public MovableElement bottomAt(float tx, float ty, final float w, final float h) {return bottomAt(tx, ty, w, h, R_UP | R_LEFT);}
+    public MovableElement bottomAt(float tx, float ty, final int from) {return bottomAt(tx, ty, width(), height(), from);}
+    public MovableElement bottomAt(float tx, float ty, final float w, final float h, final int from) {
+        size(w, h); return position(tx, ty - height(), from);
     }
-    public void at(float tx, float ty) {at(tx, ty, width(), height());}
-    public void at(float tx, float ty, final float w, final float h) {at(tx, ty, w, h, R_UP | R_LEFT);}
-    public void at(float tx, float ty, final int from) {at(tx, ty, width(), height(), from);}
-    public void at(float tx, float ty, final float w, final float h, final int from) {
-        size(w, h); position(tx, ty, from);
+    public MovableElement floorAt(float tx, float ty) {return floorAt(tx, ty, 0, 0);}
+    public MovableElement floorAt(float tx, float ty, final float w, final float h) {return floorAt(tx, ty, w, h, R_UP | R_LEFT);}
+    public MovableElement floorAt(float tx, float ty, final int from) {return floorAt(tx, ty, 0, 0, from);}
+    public MovableElement floorAt(float tx, float ty, final float w, final float h, final int from) {
+        size(w, h); return position(MathUtil.ifloor(tx), MathUtil.ifloor(ty), from);
     }
-    public void centerAt(float tx, float ty) {centerAt(tx, ty, width(), height());}
-    public void centerAt(float tx, float ty, final float w, final float h) {centerAt(tx, ty, w, h, R_UP | R_LEFT);}
-    public void centerAt(float tx, float ty, final int from) {centerAt(tx, ty, width(), height(), from);}
-    public void centerAt(float tx, float ty, final float w, final float h, final int from) {
-        size(w, h); position(tx - width()/2, ty - height()/2, from);
-    }
-    public void floorAt(float tx, float ty) {floorAt(tx, ty, 0, 0);}
-    public void floorAt(float tx, float ty, final float w, final float h) {floorAt(tx, ty, w, h, R_UP | R_LEFT);}
-    public void floorAt(float tx, float ty, final int from) {floorAt(tx, ty, 0, 0, from);}
-    public void floorAt(float tx, float ty, final float w, final float h, final int from) {
-        size(w, h); position(MathUtil.ifloor(tx), MathUtil.ifloor(ty), from);
+    public MovableElement at(float tx, float ty) {return at(tx, ty, width(), height());}
+    public MovableElement at(float tx, float ty, final float w, final float h) {return at(tx, ty, w, h, R_UP | R_LEFT);}
+    public MovableElement at(float tx, float ty, final int from) {return at(tx, ty, width(), height(), from);}
+    public MovableElement at(float tx, float ty, final float w, final float h, final int from) {
+        size(w, h); return position(tx, ty, from);
     }
 
+    /**
+     * Place le centre le l'element à la position indiquée
+     */
+    public MovableElement centerAt(float tx, float ty) {return centerAt(tx, ty, width(), height());}
+    public MovableElement centerAt(float tx, float ty, final float w, final float h) {return centerAt(tx, ty, w, h, R_UP | R_LEFT);}
+    public MovableElement centerAt(float tx, float ty, final int from) {return centerAt(tx, ty, width(), height(), from);}
+    public MovableElement centerAt(float tx, float ty, final float w, final float h, final int from) {
+        size(w, h); return position(tx - width()/2, ty - height()/2, from);
+    }
+
+    public MovableElement centerX() {return x(parent.width()/2 - width()/2);}
+    public MovableElement centerY() {return y(parent.height()/2 - height()/2);}
+    public MovableElement center() {centerX(); return centerY();}
+    public MovableElement center(final boolean x, final boolean y) {
+        if (x) centerX();
+        if (y) centerY();
+        return this;
+    }
+
+    /**
+     * Deplace l'element
+     */
     public MovableElement moveFromUp(final float y) {
         return move(0, y, R_UP);
     }

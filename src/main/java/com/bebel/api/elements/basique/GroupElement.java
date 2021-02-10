@@ -261,6 +261,16 @@ public class GroupElement extends DrawableElement {
         children.end();
     }
 
+    @Override
+    public DrawableElement flip(boolean x, boolean y) {
+        super.flip(x, y);
+        for (final AbstractElement child : children.begin()) {
+            if (!(child instanceof DrawableElement)) continue;
+            ((DrawableElement) child).flip(x, y);
+        }
+        return this;
+    }
+
     /**
      * Retourne la liste de tout les shaders et sous shader du group
      * @return

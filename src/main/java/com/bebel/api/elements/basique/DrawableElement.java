@@ -43,14 +43,14 @@ public class DrawableElement extends EventableElement {
     public void debugMe() {
         super.debugMe();
         input.onKeyDown(k -> {
-            if (k.is(Input.Keys.F)) {
-                if (k.isCtrlDown()) flipY();
-                else flipX();
+            if (k.contains(Input.Keys.F)) {
+                if (k.containsOneOf(Input.Keys.UP, Input.Keys.DOWN)) flipY();
+                else if (k.containsOneOf(Input.Keys.LEFT, Input.Keys.RIGHT)) flipX();
             }
 
             if (k.is(Input.Keys.COMMA)) {
-                if (image.isFlipX()) Gdx.app.log(name + "-FLIP", "X");
-                if (image.isFlipY()) Gdx.app.log(name + "-FLIP", "Y");
+                if (image!=null && image.isFlipX()) Gdx.app.log(name + "-FLIP", "X");
+                if (image!=null && image.isFlipY()) Gdx.app.log(name + "-FLIP", "Y");
             }
         });
     }
@@ -170,9 +170,12 @@ public class DrawableElement extends EventableElement {
     public DrawableElement image(final TextureAsset image) {return image(new TextureRegion(image.get()));}
     public DrawableElement image(final TextureRegion image) {this.image = image; return this;}
 
-    public DrawableElement flip(final boolean x, final boolean y) {image.flip(x, y); return this;}
-    public DrawableElement flipX() {image.flip(true, false); return this;}
-    public DrawableElement flipY() {image.flip(false, true); return this;}
+    public DrawableElement flip(final boolean x, final boolean y) {
+        if (image != null) image.flip(x, y);
+        return this;
+    }
+    public DrawableElement flipX() {return flip(true, false);}
+    public DrawableElement flipY() {return flip(false, true);}
 
     @Override
     public void dispose() {}
