@@ -26,6 +26,7 @@ public abstract class TransformableElement extends MovableElement {
             }
         });
         input.onKeyDown(k -> {
+            if (k.is(Input.Keys.R) && k.doubleClick()) rotation(0);
             if (k.is(Input.Keys.COMMA))
                 Gdx.app.log(name + "-ROTATION", ""+rotation);
         });

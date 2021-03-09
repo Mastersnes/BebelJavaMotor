@@ -2,6 +2,7 @@ package com.bebel.api;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.utils.Disposable;
 import com.bebel.api.resources.ResourceManager;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,6 +27,16 @@ public abstract class BebelGame extends Game implements Disposable {
         Global.shape = new ShapeRenderer();
         Global.arialFont = new BitmapFont();
         Global.inputs = Gdx.input;
+
+        int betterRefreshRate = Arrays.stream(Gdx.graphics.getDisplayModes())
+                .mapToInt(display -> display.refreshRate)
+                .max().orElse(0);
+
+        for (final Graphics.DisplayMode displayMode : Gdx.graphics.getDisplayModes()) {
+            if (displayMode.width*displayMode.height < 1024*768) continue;
+            if (displayMode.refreshRate < betterRefreshRate) continue;
+            Global.displayModes.add(displayMode);
+        }
     }
 
     /**

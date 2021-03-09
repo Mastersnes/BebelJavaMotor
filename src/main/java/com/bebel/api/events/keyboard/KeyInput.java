@@ -39,10 +39,10 @@ public class KeyInput extends SimpleInput {
         return this.key == key;
     }
 
-    public boolean simpleClick() {return clickNb == 1;}
-    public boolean doubleClick() {return clickNb == 2;}
+    public boolean simpleClick() {return clickNb == 0;}
+    public boolean doubleClick() {return clickNb == 1;}
 
-    public boolean spamClick(final int min) {return clickNb >= min;}
+    public boolean spamClick(final int min) {return clickNb >= min-1;}
 
 
     @Override

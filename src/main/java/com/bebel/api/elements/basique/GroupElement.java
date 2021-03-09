@@ -1,5 +1,6 @@
 package com.bebel.api.elements.basique;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Matrix4;
@@ -7,6 +8,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.SnapshotArray;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bebel.api.BebelScreen;
 import com.bebel.api.resources.assets.AbstractAsset;
 import com.bebel.api.resources.assets.TextureAsset;
@@ -81,10 +83,19 @@ public class GroupElement extends DrawableElement {
     public <ELEMENT extends AbstractElement> ELEMENT add(final String name, final TextureAsset asset) {
         return (ELEMENT) add(new DrawableElement(name, asset));
     }
+    public <ELEMENT extends MovableElement> ELEMENT add(final String name, final TextureAsset asset, final float w, final float h) {
+        final ELEMENT element = add(name, asset);
+        return (ELEMENT) element.size(w, h);
+    }
+    public <ELEMENT extends MovableElement> ELEMENT add(final String name, final TextureAsset asset, final float x, final float y, final float w, final float h) {
+        final ELEMENT element = add(name, asset, w, h);
+        return (ELEMENT) element.position(x, y);
+    }
     public <ELEMENT extends AbstractElement> ELEMENT add(final ELEMENT element) {
         if (foreground != null) return addBefore(foreground, element);
         else return insert(children.size, element);
     }
+
     public <ELEMENT extends AbstractElement> ELEMENT addBefore(final AbstractElement elementBefore, final ELEMENT newElement) {
         int index = children.indexOf(elementBefore, true);
         return insert(index, newElement);
@@ -236,8 +247,11 @@ public class GroupElement extends DrawableElement {
 
         boolean alreadyPainted = false;
         if (rotation == 0 && overflow == AbstractElement.Overflow.HIDDEN) {
-            area.set(maxX(), maxY(), minWidth(0), minHeight(0));
-            ScissorStack.calculateScissors(screen.getCamera(), batch.getTransformMatrix(), area, scissors);
+            area.set(0, 0, width, height);
+
+            final Camera camera = screen.getCamera();
+            final Viewport viewport = screen.getViewport();
+            ScissorStack.calculateScissors(camera, viewport.getViewportX(), viewport.getViewportY(), viewport.getViewportWidth(), viewport.getViewportHeight(), batch.getTransformMatrix(), area, scissors);
 
             if (ScissorStack.pushScissors(scissors)) {
                 alreadyPainted = true; paintClip(batch);

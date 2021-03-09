@@ -1,5 +1,6 @@
 package com.bebel.api.elements.basique;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 import com.bebel.api.BebelScreen;
@@ -22,6 +23,7 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     protected BebelScreen screen;
     protected BebelProcessor input;
     protected boolean debug, created;
+    protected float delta;
 
 
     public AbstractElement(final String name) {
@@ -225,6 +227,7 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
 
     @Override
     public boolean update(float delta) {
+        this.delta = Gdx.graphics.getDeltaTime();
         binds.values().removeIf(a -> a.update(delta));
         return true;
     }

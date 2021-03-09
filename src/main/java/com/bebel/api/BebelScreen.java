@@ -69,10 +69,9 @@ public abstract class BebelScreen implements Screen, Disposable {
         ActionManager.update(delta);
         root.update(delta);
 
-        Gdx.gl.glClearColor(0, 0, 0f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        Gdx.gl.glClearColor(0, 0, 0, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        viewport.update();
         batch.setProjectionMatrix(camera.combined);
         Global.shape.setProjectionMatrix(batch.getProjectionMatrix());
 
@@ -123,12 +122,6 @@ public abstract class BebelScreen implements Screen, Disposable {
     @Override
     public void resize(int w, int h) {
         viewport.update(w, h, false);
-//        if (camera instanceof OrthographicCamera) {
-//            ((OrthographicCamera) camera).setToOrtho(false, w, h);
-//        }
-        batch.setProjectionMatrix(camera.combined);
-//        batch.setTransformMatrix(camera.view);
-
         root.getShaders().stream().forEach(s -> s.resize(w, h));
     }
 

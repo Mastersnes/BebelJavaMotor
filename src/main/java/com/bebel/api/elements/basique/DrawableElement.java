@@ -20,7 +20,6 @@ import pythagoras.f.MathUtil;
  */
 public class DrawableElement extends EventableElement {
     protected TextureRegion image;
-    protected boolean flipX, flipY;
 
     protected Color tint = Color.WHITE.cpy();
     protected float alpha = 1;
@@ -42,6 +41,7 @@ public class DrawableElement extends EventableElement {
     @Override
     public void debugMe() {
         super.debugMe();
+        alpha(0.8f);
         input.onKeyDown(k -> {
             if (k.contains(Input.Keys.F)) {
                 if (k.containsOneOf(Input.Keys.UP, Input.Keys.DOWN)) flipY();
@@ -176,6 +176,9 @@ public class DrawableElement extends EventableElement {
     }
     public DrawableElement flipX() {return flip(true, false);}
     public DrawableElement flipY() {return flip(false, true);}
+
+    public boolean isFlipX() {return image!=null && image.isFlipX();}
+    public boolean isFlipY() {return image!=null && image.isFlipY();}
 
     @Override
     public void dispose() {}

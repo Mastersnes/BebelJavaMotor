@@ -104,5 +104,19 @@ public class AnimableElement extends DrawableElement {
     }
 
     @Override
+    public DrawableElement flip(boolean x, boolean y) {
+        super.flip(x, y);
+        if (currentAnim != null) {
+            currentAnim.flip(x, y);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean isFlipX() {return super.isFlipX() || (currentAnim != null && currentAnim.isFlipX());}
+    @Override
+    public boolean isFlipY() {return super.isFlipY() || (currentAnim != null && currentAnim.isFlipY());}
+
+    @Override
     public void dispose() {animations.clear();}
 }

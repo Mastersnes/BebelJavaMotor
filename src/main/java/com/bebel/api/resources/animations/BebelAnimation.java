@@ -42,13 +42,15 @@ public class BebelAnimation implements Pool.Poolable, Updatable {
         this.name = name;
     }
 
-    public void flipX(boolean flipX) {
-        this.flipX = flipX;
+    public void flip(boolean flipX, boolean flipY) {
+        if (flipX) this.flipX = !this.flipX;
+        if (flipY) this.flipY = !this.flipY;
     }
+    public boolean isFlipX() {return flipX;}
+    public void flipX() {flip(true, false);}
 
-    public void flipY(boolean flipY) {
-        this.flipY = flipY;
-    }
+    public boolean isFlipY() {return flipY;}
+    public void flipY() {flip(true, false);}
 
     public String name() {
         return name;
@@ -146,8 +148,7 @@ public class BebelAnimation implements Pool.Poolable, Updatable {
         final BebelAnimation animation = Pools.obtain(BebelAnimation.class);
         animation.name(this.name);
         animation.animation(this.animation);
-        animation.flipX(flipX);
-        animation.flipY(flipY);
+        animation.flip(flipX, flipY);
         return animation;
     }
 

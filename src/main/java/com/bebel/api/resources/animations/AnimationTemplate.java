@@ -33,8 +33,7 @@ public class AnimationTemplate extends Animation {
     public BebelAnimation instance(final String name, final boolean flipX, final boolean flipY) {
         final BebelAnimation animation = BebelAnimation.obtain(name);
         animation.animation(this);
-        animation.flipX(flipX);
-        animation.flipY(flipY);
+        animation.flip(flipX, flipY);
         return animation;
     }
 }
