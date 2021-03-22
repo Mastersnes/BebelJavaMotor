@@ -11,6 +11,7 @@
 	<name>BebelMotor Core</name>
 
 	<properties>
+		<gdx.version>1.9.11</gdx.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
@@ -19,8 +20,21 @@
 		<dependency>
 			<groupId>com.badlogicgames.gdx</groupId>
 			<artifactId>gdx</artifactId>
-			<version>1.2.0</version>
+			<version>${gdx.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.badlogicgames.gdx</groupId>
+			<artifactId>gdx-box2d</artifactId>
+			<version>${gdx.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.codeandweb.physicseditor</groupId>
+			<artifactId>gdx-pe-loader</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+
         <dependency>
             <groupId>org.lwjgl.lwjgl</groupId>
             <artifactId>lwjgl</artifactId>

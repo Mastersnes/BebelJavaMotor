@@ -18,9 +18,11 @@ import java.util.Map;
  * Classe de base de l'API Bebel
  */
 public abstract class BebelGame extends Game implements Disposable {
-    private Map<String, BebelScreen> screens = new HashMap<>();
+    protected Map<String, BebelScreen> screens = new HashMap<>();
 
-    @Override
+    public BebelGame() {this(1);}
+    public BebelGame(final float scale) {Global.scale = scale;}
+
     public void create() {
         Global.game = this;
         Global.batch = new SpriteBatch();

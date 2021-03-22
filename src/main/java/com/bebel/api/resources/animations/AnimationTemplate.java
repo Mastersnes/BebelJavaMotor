@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.Array;
 /**
  * Represente un template d'animation
  */
-public class AnimationTemplate extends Animation {
+public class AnimationTemplate extends Animation<TextureRegion> {
     public AnimationTemplate(float frameDuration, Array<? extends TextureRegion> keyFrames) {
         super(frameDuration, keyFrames);
     }

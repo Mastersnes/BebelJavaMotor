@@ -118,9 +118,8 @@ public class LightShader extends AbstractShader {
 
     @Override
     public void resize(int w, int h) {
-        shader.begin();
+        shader.bind();
         shader.setUniformf("Resolution", w, h);
-        shader.end();
     }
 
     public float lightZ() {

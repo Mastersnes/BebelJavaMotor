@@ -3,12 +3,15 @@ package com.bebel.api.elements.basique;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import pythagoras.f.Point;
+import react.Signal;
+import react.SignalView;
 
 /**
  * Represente un element pouvant être transformé
  */
 public abstract class TransformableElement extends MovableElement {
-    public static int CENTERX = (1 << 3), CENTERY = (1 << 3);
+    public static int CENTERX = (1 << 4), CENTERY = (1 << 5);
 
     public TransformableElement(String name) {super(name);}
 
@@ -48,6 +51,11 @@ public abstract class TransformableElement extends MovableElement {
     /**
      * Transformable
      */
+    protected final Point oldScale = new Point();
+    protected Signal<Point> onScaleChanged;
+    protected Float oldRotation;
+    protected Signal<Float> onRotationChanged;
+
     protected float scaleX = 1, scaleY = 1, rotation = 0;
     protected int rotateOrigin = CENTERX | CENTERY, scaleOrigin = CENTERX | CENTERY;
     protected Vector2 rotateVector = new Vector2(), scaleVector = new Vector2();
@@ -56,8 +64,11 @@ public abstract class TransformableElement extends MovableElement {
         return rotation;
     }
     public TransformableElement rotation(final float rotation) {
+        if (rotation == this.rotation) return this;
+        oldRotation = this.rotation;
         this.rotation = rotation;
         updateOrigin(rotateOrigin, rotateVector);
+        if (onRotationChanged != null) onRotationChanged.emit(oldRotation);
         return this;
     }
 
@@ -65,17 +76,35 @@ public abstract class TransformableElement extends MovableElement {
         return scaleY;
     }
     public TransformableElement scaleY(final float scale) {
+        if (scaleY == scale) return this;
+        oldScale.set(scaleX, scaleY);
         this.scaleY = scale;
         updateOrigin(scaleOrigin, scaleVector);
+        if (onScaleChanged != null) onScaleChanged.emit(oldScale);
         return this;
     }
 
     public float scaleX() {return scaleX;}
     public TransformableElement scaleX(final float scale) {
+        if (scaleX == scale) return this;
+        oldScale.set(scaleX, scaleY);
         this.scaleX = scale;
         updateOrigin(scaleOrigin, scaleVector);
+        if (onScaleChanged != null) onScaleChanged.emit(oldScale);
         return this;
     }
+
+    public TransformableElement onScaleChanged(final SignalView.Listener<Point> action) {
+        if (onScaleChanged == null) onScaleChanged = Signal.create();
+        onScaleChanged.connect(action);
+        return this;
+    }
+    public TransformableElement onRotationChanged(final SignalView.Listener<Float> action) {
+        if (onRotationChanged == null) onRotationChanged = Signal.create();
+        onRotationChanged.connect(action);
+        return this;
+    }
+
 
     public TransformableElement rotateOrigin(final int from) {
         this.rotateOrigin = from;

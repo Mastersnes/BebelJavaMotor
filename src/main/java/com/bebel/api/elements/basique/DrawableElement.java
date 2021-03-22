@@ -10,10 +10,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector;
+import com.badlogic.gdx.math.Vector2;
 import com.bebel.api.Global;
 import com.bebel.api.resources.ResourceManager;
 import com.bebel.api.resources.assets.TextureAsset;
+import com.bebel.api.utils.SimpleVector;
 import pythagoras.f.MathUtil;
+import react.Signal;
+import react.SignalView;
 
 /**
  * Represente un element dessinable
@@ -139,10 +144,22 @@ public class DrawableElement extends EventableElement {
     /**
      * COULEUR et OPACITE
      */
+    protected Float oldAlpha;
+    protected Signal<Float> onAlphaChanged;
+
     public float alpha() {return alpha;}
     public DrawableElement alpha(float alpha) {
+        if (this.alpha == alpha) return this;
+        oldAlpha = this.alpha;
         this.alpha = alpha;
         this.tint.a = MathUtil.clamp(alpha, 0, 1);
+        if (onAlphaChanged != null) onAlphaChanged.emit(alpha);
+        return this;
+    }
+
+    public TransformableElement onAlphaChanged(final SignalView.Listener<Float> action) {
+        if (onAlphaChanged == null) onAlphaChanged = Signal.create();
+        onAlphaChanged.connect(action);
         return this;
     }
 
@@ -170,8 +187,15 @@ public class DrawableElement extends EventableElement {
     public DrawableElement image(final TextureAsset image) {return image(new TextureRegion(image.get()));}
     public DrawableElement image(final TextureRegion image) {this.image = image; return this;}
 
+    protected SimpleVector<Boolean> oldFlip = new SimpleVector<>();
+    protected Signal<SimpleVector<Boolean>> onFlipChanged;
+
     public DrawableElement flip(final boolean x, final boolean y) {
-        if (image != null) image.flip(x, y);
+        if (image != null) {
+            oldFlip.set(image.isFlipX(), image.isFlipY());
+            image.flip(x, y);
+            if (onFlipChanged != null) onFlipChanged.emit(oldFlip);
+        }
         return this;
     }
     public DrawableElement flipX() {return flip(true, false);}

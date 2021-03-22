@@ -20,12 +20,20 @@ public class BebelMathUtils {
         return (inconnuSrc * corresp) / src;
     }
 
+    /**
+     * Permet de convertir une coordonnée de texture en pixel
+     * @param image
+     * @param srcWidth
+     * @param srcHeight
+     * @param cibleWidth
+     * @param cibleHeight
+     * @return
+     */
     public static Point texelToPixel(final Texture image,
                                      final float srcWidth, final float srcHeight,
                                      final float cibleWidth, final float cibleHeight) {
         return texelToPixel(image.getWidth(), image.getHeight(), srcWidth, srcHeight, cibleWidth, cibleHeight);
     }
-
     private static Point texelToPixel(final int imageWidth, final int imageHeight,
                                       float srcWidth, float srcHeight,
                                       float cibleWidth, float cibleHeight) {

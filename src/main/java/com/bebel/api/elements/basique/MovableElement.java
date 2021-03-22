@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import org.lwjgl.opengl.Display;
 import pythagoras.f.Dimension;
 import pythagoras.f.MathUtil;
+import pythagoras.f.Point;
 import react.Signal;
 import react.SignalView;
 
@@ -57,20 +58,43 @@ public abstract class MovableElement extends AbstractElement {
     /**
      * Movable
      */
+    protected final Point oldPosition = new Point();
+    protected Signal<Point> onPositionChanged;
     protected float x, y;
-    protected Signal<Dimension> onSizeChanged;
 
-    public MovableElement x(final float x) {this.x = x; return this;}
+    public MovableElement x(final float x) {
+        if (this.x == x) return this;
+        oldPosition.set(this.x, this.y);
+        this.x = x;
+        if (onPositionChanged != null) onPositionChanged.emit(oldPosition);
+        return this;
+    }
     public float x() {
         return x;
     }
 
-    public MovableElement y(final float y) {this.y = y; return this;}
+    public MovableElement y(final float y) {
+        if (this.y == y) return this;
+        oldPosition.set(this.x, this.y);
+        this.y = y;
+        if (onPositionChanged != null) onPositionChanged.emit(oldPosition);
+        return this;
+    }
     public float y() {
         return y;
     }
     public float relativeY() {
-        return parentHeight() - height() - y();
+        return relativeY(y());
+    }
+    public float relativeY(final float y) {
+        return parentHeight() - height() - y;
+    }
+
+    public MovableElement onMove(final SignalView.Listener<Point> action) {return onPositionChanged(action);}
+    public MovableElement onPositionChanged(final SignalView.Listener<Point> action) {
+        if (onPositionChanged == null) onPositionChanged = Signal.create();
+        onPositionChanged.connect(action);
+        return this;
     }
 
     protected float maxX() {
@@ -176,11 +200,15 @@ public abstract class MovableElement extends AbstractElement {
     /**
      * Sizable
      */
+    protected final Dimension oldSize = new Dimension();
+    protected Signal<Dimension> onSizeChanged;
     protected float width, height;
     protected boolean fitContent;
 
     public float width() {return width;}
     public MovableElement width(final float width, boolean updateOrigin) {
+        if (this.width == width) return this;
+        oldSize.setSize(this.width, this.height);
         this.width = width;
         dontFitContent();
         if (updateOrigin) updateOrigins();
@@ -190,6 +218,8 @@ public abstract class MovableElement extends AbstractElement {
 
     public float height() {return height;}
     public MovableElement height(final float height) {
+        if (this.height == height) return this;
+        oldSize.setSize(this.width, this.height);
         this.height = height;
         dontFitContent();
         updateOrigins();
@@ -199,11 +229,11 @@ public abstract class MovableElement extends AbstractElement {
 
     public float parentWidth() {
         if (parent != null) return parent.width();
-        else return Display.getWidth();
+        else return screen.getRoot().width;
     }
     public float parentHeight() {
         if (parent != null) return parent.height();
-        else return Display.getHeight();
+        else return screen.getRoot().height;
     }
 
     protected float minWidth(float x) {
@@ -224,16 +254,12 @@ public abstract class MovableElement extends AbstractElement {
         } return height() - y;
     }
 
-    protected final Dimension oldSize = new Dimension();
     public MovableElement size(final float w, final float h) {
-        oldSize.setSize(w, h);
         width(w, false); height(h);
-        if (onSizeChanged != null) onSizeChanged.emit(oldSize);
         return this;
     }
     public MovableElement resize(final float w, final float h) {
         width(width + w, false); height(height + h);
-        if (onSizeChanged != null) onSizeChanged.emit(oldSize);
         return this;
     }
 

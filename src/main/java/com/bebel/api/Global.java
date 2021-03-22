@@ -20,6 +20,7 @@ public class Global {
 
     public static Input inputs;
     public static List<Graphics.DisplayMode> displayModes = new ArrayList<>();
+    public static float scale;
 
     public static BitmapFont arialFont;
 }

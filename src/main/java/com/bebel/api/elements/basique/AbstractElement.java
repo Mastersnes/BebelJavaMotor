@@ -2,11 +2,13 @@ package com.bebel.api.elements.basique;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Disposable;
 import com.bebel.api.BebelScreen;
 import com.bebel.api.actions.temporal.BindAction;
 import com.bebel.api.contrats.Updatable;
 import com.bebel.api.events.BebelProcessor;
+import com.bebel.api.resources.elements.Hitbox;
 import com.bebel.api.shaders.AbstractShader;
 import react.*;
 
@@ -25,6 +27,7 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     protected boolean debug, created;
     protected float delta;
 
+    protected Body body;
 
     public AbstractElement(final String name) {
         this.name = name;
@@ -176,6 +179,12 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
         }
         return this;
     }
+
+    /**
+     * COLISIONNABLE
+     */
+    public Body body() {return body;}
+    public void body(final Body body) {this.body = body;}
 
     /**
      * SHADER

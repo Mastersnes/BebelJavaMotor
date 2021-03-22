@@ -157,19 +157,16 @@ public abstract class AbstractShader implements Updatable {
      * Permet de commencer le shader en lui attribuant les constantes et operations de base
      */
     public final void begin(final AbstractElement layer) {
-        shader.begin();
+        shader.bind();
         this.layer = layer;
         if (layer instanceof EventableElement) {
             ((EventableElement) layer).onMouseMove(m -> {
-                shader.begin();
+                shader.bind();
                 shader.setUniformf("u_mouse", m.x, m.y);
-                shader.end();
             });
         }
 
         begin();
-
-        shader.end();
     }
 
     protected abstract void begin();
@@ -178,17 +175,15 @@ public abstract class AbstractShader implements Updatable {
      * Appelé lorsque la fenetre est resize afin de mettre à jour la resolution
      */
     public void resize(final int w, final int h) {
-        shader.begin();
+        shader.bind();
         shader.setUniformf("u_resolution", w, h);
-        shader.end();
     }
 
     @Override
     public boolean update(final float delta) {
-        shader.begin();
+        shader.bind();
         time += delta;
         shader.setUniformf("u_time", time);
-        shader.end();
         return true;
     }
 

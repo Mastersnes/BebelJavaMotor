@@ -1,11 +1,8 @@
 package com.bebel.api.events;
 
-import com.badlogic.gdx.utils.Pool;
 import com.bebel.api.elements.basique.EventableElement;
 import com.bebel.api.manager.CollectionManager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.badlogic.gdx.Input.Keys.*;

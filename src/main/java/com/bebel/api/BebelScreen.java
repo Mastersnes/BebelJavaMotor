@@ -13,6 +13,7 @@ import com.bebel.api.elements.basique.AbstractElement;
 import com.bebel.api.elements.basique.EventableElement;
 import com.bebel.api.elements.basique.GroupElement;
 import com.bebel.api.events.BebelProcessor;
+import com.bebel.api.utils.BebelUtils;
 import org.lwjgl.opengl.Display;
 
 import static com.bebel.api.Global.batch;
@@ -37,13 +38,13 @@ public abstract class BebelScreen implements Screen, Disposable {
     public BebelScreen(final float worldW, final float worldH) {
         setCamera(new OrthographicCamera());
         getCamera(OrthographicCamera.class)
-                .setToOrtho(false, Display.getWidth(), Display.getHeight());
+                .setToOrtho(false, worldW * Global.scale, worldH * Global.scale);
 
-        viewport = new FitViewport(worldW, worldH, camera);
+        viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
 
         game = Global.game;
 
-        root = new GroupElement("root", Display.getWidth(), Display.getHeight());
+        root = new GroupElement("root", viewport.getWorldWidth(), viewport.getWorldHeight());
         root.setScreen(this);
         root.create();
 

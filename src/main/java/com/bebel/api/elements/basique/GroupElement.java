@@ -31,7 +31,7 @@ public class GroupElement extends DrawableElement {
     private AbstractElement background = null, foreground = null;
     private Signal<Boolean> childrenChanged;
 
-    public GroupElement(final String name) {this(name, Display.getWidth(), Display.getHeight());}
+    public GroupElement(final String name) {this(name, 0, 0);}
     public GroupElement(final String name, float w, float h) {super(name, null, w, h);}
 
     @Override
@@ -251,7 +251,7 @@ public class GroupElement extends DrawableElement {
 
             final Camera camera = screen.getCamera();
             final Viewport viewport = screen.getViewport();
-            ScissorStack.calculateScissors(camera, viewport.getViewportX(), viewport.getViewportY(), viewport.getViewportWidth(), viewport.getViewportHeight(), batch.getTransformMatrix(), area, scissors);
+            ScissorStack.calculateScissors(camera, viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight(), batch.getTransformMatrix(), area, scissors);
 
             if (ScissorStack.pushScissors(scissors)) {
                 alreadyPainted = true; paintClip(batch);
