@@ -2,7 +2,7 @@ package com.bebel.api.actions.temporal;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.bebel.api.actions.AutomatedAction;
-import com.bebel.api.elements.basique.AbstractElement;
+import com.bebel.api.elements.basique.predicats.AbstractElement;
 
 /**
  * Classe de base pour les actions lié à l'ecoulement du temps

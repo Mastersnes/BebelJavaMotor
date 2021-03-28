@@ -1,4 +1,4 @@
-package com.bebel.api.elements.basique;
+package com.bebel.api.elements.basique.predicats;
 
 import com.badlogic.gdx.math.Vector2;
 import com.bebel.api.events.mouse.MouseInput;

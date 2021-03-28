@@ -1,9 +1,6 @@
 package com.bebel.api.shaders;
 
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
-import com.bebel.api.elements.basique.DrawableElement;
-import org.lwjgl.opengl.Display;
 
 /**
  * Shader de test affichant une lumiere

@@ -1,7 +1,7 @@
 package com.bebel.api.actions.temporal;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.bebel.api.elements.basique.TransformableElement;
+import com.bebel.api.elements.basique.predicats.TransformableElement;
 import pythagoras.f.Point;
 
 /**

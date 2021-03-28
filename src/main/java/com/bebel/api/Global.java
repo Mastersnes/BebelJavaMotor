@@ -13,6 +13,7 @@ import java.util.List;
  * Variabls globales utiles au bon deroulement du jeu
  */
 public class Global {
+    public static boolean debugMode = false;
     public static BebelGame game;
 
     public static SpriteBatch batch;
@@ -23,4 +24,11 @@ public class Global {
     public static float scale;
 
     public static BitmapFont arialFont;
+
+    /**
+     * Constantes de physics
+     */
+    public static final float STEP_TIME = 1f / 60f;
+    public static final int VELOCITY_ITERATIONS = 6;
+    public static final int POSITION_ITERATIONS = 2;
 }

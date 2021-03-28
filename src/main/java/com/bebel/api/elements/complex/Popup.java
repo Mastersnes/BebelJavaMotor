@@ -1,7 +1,7 @@
 package com.bebel.api.elements.complex;
 
-import com.bebel.api.elements.basique.DrawableElement;
-import com.bebel.api.elements.basique.GroupElement;
+import com.bebel.api.elements.basique.predicats.DrawableElement;
+import com.bebel.api.elements.basique.predicats.GroupElement;
 import com.bebel.api.resources.assets.TextureAsset;
 
 /**

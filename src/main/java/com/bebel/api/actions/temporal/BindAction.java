@@ -1,6 +1,6 @@
 package com.bebel.api.actions.temporal;
 
-import com.bebel.api.elements.basique.AbstractElement;
+import com.bebel.api.elements.basique.predicats.AbstractElement;
 
 /**
  * Action se bindant à une cible

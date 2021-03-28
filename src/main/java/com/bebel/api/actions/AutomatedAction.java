@@ -4,7 +4,7 @@ import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.bebel.api.actions.organisation.RepeatAction;
 import com.bebel.api.contrats.Updatable;
-import com.bebel.api.elements.basique.AbstractElement;
+import com.bebel.api.elements.basique.predicats.AbstractElement;
 import react.Signal;
 
 /**

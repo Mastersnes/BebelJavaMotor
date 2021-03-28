@@ -1,15 +1,14 @@
-package com.bebel.api.elements.basique;
+package com.bebel.api.elements.basique.predicats;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import org.lwjgl.opengl.Display;
 import pythagoras.f.Dimension;
 import pythagoras.f.MathUtil;
 import pythagoras.f.Point;
 import react.Signal;
 import react.SignalView;
 
-import static com.bebel.api.elements.basique.AbstractElement.Overflow.HIDDEN;
+import static com.bebel.api.elements.basique.predicats.AbstractElement.Overflow.HIDDEN;
 
 /**
  * Represente un element pouvant être deplacé et redimenssionné

@@ -42,4 +42,19 @@ public class BebelMathUtils {
         texel.y = (int) crossProduct(srcHeight, imageHeight, cibleHeight);
         return texel;
     }
+
+    /**
+     * Renvoi la valeur du pourcentage
+     */
+    public static float percent(final float value, final float percentage) {return percent(value, percentage, 100);}
+    public static float percent(final float value, final float percentage, final float base) {
+        return (value * percentage) / base;
+    }
+
+    /**
+     * Renvoi la valeur en pourcentage¨de la base
+     */
+    public static float toPercent(final float value, final float base) {
+        return (value * 100) / base;
+    }
 }

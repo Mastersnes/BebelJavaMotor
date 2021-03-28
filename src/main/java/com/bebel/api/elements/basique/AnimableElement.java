@@ -2,15 +2,20 @@ package com.bebel.api.elements.basique;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.bebel.api.elements.basique.predicats.CollisionableElement;
+import com.bebel.api.elements.basique.predicats.DrawableElement;
 import com.bebel.api.resources.animations.AnimationTemplate;
 import com.bebel.api.resources.animations.BebelAnimation;
+import com.bebel.api.resources.assets.PhysicsAsset;
+import com.bebel.api.utils.BebelBodyDef;
 import org.apache.commons.lang3.StringUtils;
 import react.RMap;
 
 /**
  * Represente un element animable
  */
-public class AnimableElement extends DrawableElement {
+public class AnimableElement extends CollisionableElement {
     protected BebelAnimation currentAnim;
     protected RMap<String, BebelAnimation> animations = RMap.create();
     {
@@ -22,7 +27,10 @@ public class AnimableElement extends DrawableElement {
         });
     }
 
-    public AnimableElement(final String name, final float w, final float h) {super(name, null, w, h);}
+    protected RMap<String, BebelBodyDef> bodies = RMap.create();
+
+    public AnimableElement(final String name, final float w, final float h) {super(name, null, null, w, h);}
+    public AnimableElement(final String name, final PhysicsAsset physics, final float w, final float h) {super(name, null, physics, w, h);}
 
     public BebelAnimation getAnim(final String name) {
         if (!animations.containsKey(name)) {
@@ -36,17 +44,26 @@ public class AnimableElement extends DrawableElement {
         if (currentAnim == null) return name == null;
         else return StringUtils.equals(currentAnim.name(), name);
     }
-    public void addAnim(final String name, final BebelAnimation animation) {
-        animation.name(name); animations.put(name, animation);
+    public void addAnim(final String name, final BebelAnimation animation) {addAnim(name, animation, null, null);}
+    public void addAnim(final String name, final BebelAnimation animation, final String bodyName, final BodyDef.BodyType bodyType) {
+        addAnim(name, animation, new BebelBodyDef(bodyName, bodyType));
     }
-    public void addAnim(final String name, final AnimationTemplate animation) {
-        addAnim(name, animation.instance(name));
+    public void addAnim(final String name, final BebelAnimation animation, final BebelBodyDef body) {
+        animation.name(name); animations.put(name, animation);
+        if (body != null) bodies.put(name, body);
+    }
+    public void addAnim(final String name, final AnimationTemplate animation) {addAnim(name, animation, null);}
+    public void addAnim(final String name, final AnimationTemplate animation, final String bodyName, final BodyDef.BodyType bodyType) {
+        addAnim(name, animation, new BebelBodyDef(bodyName, bodyType));
+    }
+    public void addAnim(final String name, final AnimationTemplate animation, final BebelBodyDef body) {
+        addAnim(name, animation.instance(name), body);
     }
     public void cloneAnim(final String src, final String cible) {
         cloneAnim(src, cible, false, false);
     }
     public void cloneAnim(final String src, final String cible, final boolean flipX, final boolean flipY) {
-        addAnim(cible, getAnim(src).clone(flipX, flipY));
+        addAnim(cible, getAnim(src).clone(flipX, flipY), bodies.get(src));
     }
 
     /**
@@ -61,6 +78,8 @@ public class AnimableElement extends DrawableElement {
 
         currentAnim = getAnim(name);
         currentAnim.restart();
+
+        if (bodies.containsKey(name)) body(bodies.get(name));
         return currentAnim;
     }
 

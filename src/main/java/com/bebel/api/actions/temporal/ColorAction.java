@@ -2,7 +2,7 @@ package com.bebel.api.actions.temporal;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Interpolation;
-import com.bebel.api.elements.basique.DrawableElement;
+import com.bebel.api.elements.basique.predicats.DrawableElement;
 
 /**
  * Action de coloration

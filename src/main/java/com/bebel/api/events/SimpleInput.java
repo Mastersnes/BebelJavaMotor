@@ -1,6 +1,6 @@
 package com.bebel.api.events;
 
-import com.bebel.api.elements.basique.EventableElement;
+import com.bebel.api.elements.basique.predicats.EventableElement;
 import com.bebel.api.manager.CollectionManager;
 
 import java.util.List;

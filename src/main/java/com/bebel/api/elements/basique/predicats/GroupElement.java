@@ -1,4 +1,4 @@
-package com.bebel.api.elements.basique;
+package com.bebel.api.elements.basique.predicats;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
@@ -10,11 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bebel.api.BebelScreen;
-import com.bebel.api.resources.assets.AbstractAsset;
+import com.bebel.api.resources.assets.PhysicsAsset;
 import com.bebel.api.resources.assets.TextureAsset;
 import com.bebel.api.shaders.AbstractShader;
 import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.opengl.Display;
 import react.Signal;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import java.util.List;
 /**
  * Represente un element dessinable regroupant d'autres elements
  */
-public class GroupElement extends DrawableElement {
+public class GroupElement extends CollisionableElement {
     private final SnapshotArray<AbstractElement> children = new SnapshotArray(true, 4, AbstractElement.class);
     private final Matrix4 oldBatchTransform = new Matrix4();
     private final Color oldBatchColor = new Color();
@@ -32,7 +31,11 @@ public class GroupElement extends DrawableElement {
     private Signal<Boolean> childrenChanged;
 
     public GroupElement(final String name) {this(name, 0, 0);}
-    public GroupElement(final String name, float w, float h) {super(name, null, w, h);}
+    public GroupElement(final String name, final PhysicsAsset physics) {this(name, physics, 0, 0);}
+    public GroupElement(final String name, float w, float h) {super(name, null, null, w, h);}
+    public GroupElement(final String name, final PhysicsAsset physics, float w, float h) {
+        super(name, null, physics, w, h);
+    }
 
     @Override
     protected void createImpl() {
@@ -62,34 +65,45 @@ public class GroupElement extends DrawableElement {
     /**
      * CHILDREN
      */
-    public <ELEMENT extends AbstractElement> ELEMENT background(final TextureAsset asset) {
-        return (ELEMENT) background(new DrawableElement("background", asset));
+    public DrawableElement background(final TextureAsset element) {
+        return background(new DrawableElement("background", element));
+    }
+    public CollisionableElement background(final TextureAsset element, final PhysicsAsset physics) {
+        return background(new CollisionableElement("background", element, physics));
     }
     public <ELEMENT extends AbstractElement> ELEMENT background(final ELEMENT element) {
         if (background != null) remove(background);
         background = null;
         background = insert(0, element);
+        if (background instanceof TransformableElement)
+            ((TransformableElement) background).unactiveZ();
         return element;
     }
-    public <ELEMENT extends AbstractElement> ELEMENT foreground(final TextureAsset asset) {
-        return (ELEMENT) foreground(new DrawableElement("foreground", asset));
+
+    public DrawableElement foreground(final TextureAsset element) {
+        return foreground(new DrawableElement("foreground", element));
+    }
+    public CollisionableElement foreground(final TextureAsset element, final PhysicsAsset physics) {
+        return foreground(new CollisionableElement("foreground", element, physics));
     }
     public <ELEMENT extends AbstractElement> ELEMENT foreground(final ELEMENT element) {
         if (foreground != null) remove(foreground);
         foreground = null;
         foreground = add(element);
+        if (foreground instanceof TransformableElement)
+            ((TransformableElement) foreground).unactiveZ();
         return element;
     }
-    public <ELEMENT extends AbstractElement> ELEMENT add(final String name, final TextureAsset asset) {
-        return (ELEMENT) add(new DrawableElement(name, asset));
+
+    public DrawableElement add(final String name, final TextureAsset element) {return add(name, element, 0f, 0f);}
+    public DrawableElement add(final String name, final TextureAsset element, final float w, final float h) {
+        return add(new DrawableElement(name, element, w, h));
     }
-    public <ELEMENT extends MovableElement> ELEMENT add(final String name, final TextureAsset asset, final float w, final float h) {
-        final ELEMENT element = add(name, asset);
-        return (ELEMENT) element.size(w, h);
+    public CollisionableElement add(final String name, final TextureAsset element, final PhysicsAsset physics) {
+        return add(name, element, physics, 0, 0);
     }
-    public <ELEMENT extends MovableElement> ELEMENT add(final String name, final TextureAsset asset, final float x, final float y, final float w, final float h) {
-        final ELEMENT element = add(name, asset, w, h);
-        return (ELEMENT) element.position(x, y);
+    public CollisionableElement add(final String name, final TextureAsset element, final PhysicsAsset physics, final float w, final float h) {
+        return add(new CollisionableElement(name, element, physics, w, h));
     }
     public <ELEMENT extends AbstractElement> ELEMENT add(final ELEMENT element) {
         if (foreground != null) return addBefore(foreground, element);
@@ -128,6 +142,7 @@ public class GroupElement extends DrawableElement {
             if (screen != null) screen.unfocus(element);
             element.removed();
             element.setParent(null); element.setScreen(null);
+            element.setScene(null);
             if (childrenChanged != null) childrenChanged.emit(false);
             return element;
         }
@@ -138,6 +153,7 @@ public class GroupElement extends DrawableElement {
         for(final AbstractElement child : children.begin()) {
             if (child == null || !child.isAdded()) continue;
             child.setScreen(null); child.setParent(null);
+            child.setScene(null);
             child.removed();
         }
         children.end();
@@ -341,10 +357,14 @@ public class GroupElement extends DrawableElement {
         super.update(delta);
         for (final AbstractElement child : children.begin()) {
             if (child == null || !child.isAdded()) continue;
-            child.update(delta);
+            updateChild(child, delta);
         }
         children.end();
         return true;
+    }
+
+    protected void updateChild(final AbstractElement child, final float delta) {
+        child.update(delta);
     }
 
     public GroupElement onChildrenChanged(final Signal.Listener<Boolean> event) {

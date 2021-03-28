@@ -3,8 +3,8 @@ package com.bebel.api.shaders;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.bebel.api.contrats.Updatable;
-import com.bebel.api.elements.basique.AbstractElement;
-import com.bebel.api.elements.basique.EventableElement;
+import com.bebel.api.elements.basique.predicats.AbstractElement;
+import com.bebel.api.elements.basique.predicats.EventableElement;
 
 /**
  * Classe de base pour un shader

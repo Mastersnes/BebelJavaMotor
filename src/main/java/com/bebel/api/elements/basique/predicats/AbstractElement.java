@@ -1,14 +1,13 @@
-package com.bebel.api.elements.basique;
+package com.bebel.api.elements.basique.predicats;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.utils.Disposable;
 import com.bebel.api.BebelScreen;
 import com.bebel.api.actions.temporal.BindAction;
 import com.bebel.api.contrats.Updatable;
 import com.bebel.api.events.BebelProcessor;
-import com.bebel.api.resources.elements.Hitbox;
+import com.bebel.api.manager.BebelScene;
 import com.bebel.api.shaders.AbstractShader;
 import react.*;
 
@@ -23,11 +22,10 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     protected GroupElement parent;
     protected AbstractShader shader;
     protected BebelScreen screen;
+    protected BebelScene scene;
     protected BebelProcessor input;
     protected boolean debug, created;
     protected float delta;
-
-    protected Body body;
 
     public AbstractElement(final String name) {
         this.name = name;
@@ -46,6 +44,11 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     public void setScreen(BebelScreen screen) {
         this.screen = screen;
         if (screen != null) this.input = screen.input();
+    }
+
+    public BebelScene scene() {return scene;}
+    public void setScene(BebelScene scene) {
+        this.scene = scene;
     }
 
     public AbstractElement remove() {
@@ -179,12 +182,6 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
         }
         return this;
     }
-
-    /**
-     * COLISIONNABLE
-     */
-    public Body body() {return body;}
-    public void body(final Body body) {this.body = body;}
 
     /**
      * SHADER

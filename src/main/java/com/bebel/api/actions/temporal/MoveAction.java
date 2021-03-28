@@ -1,10 +1,10 @@
 package com.bebel.api.actions.temporal;
 
 import com.badlogic.gdx.math.Interpolation;
-import com.bebel.api.elements.basique.TransformableElement;
+import com.bebel.api.elements.basique.predicats.TransformableElement;
 import pythagoras.f.Vector3;
 
-import static com.bebel.api.elements.basique.MovableElement.*;
+import static com.bebel.api.elements.basique.predicats.MovableElement.*;
 
 /**
  * Action de deplacement d'un point à un autre

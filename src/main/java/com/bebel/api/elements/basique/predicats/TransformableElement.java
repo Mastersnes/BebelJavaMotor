@@ -1,4 +1,4 @@
-package com.bebel.api.elements.basique;
+package com.bebel.api.elements.basique.predicats;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -37,8 +37,17 @@ public abstract class TransformableElement extends MovableElement {
 
     /**
      * Movable - Ajout du z
+     * Indique que l'element est destiné à être deplacer dans l'espace
      */
-    public TransformableElement z(final float z) {return scale(z);}
+    protected boolean zActive;
+
+    public TransformableElement activeZ() {zActive = true; return this;}
+    public TransformableElement unactiveZ() {zActive = false; return this;}
+    public boolean isZActive() { return zActive;}
+    public TransformableElement z(final float z) {
+        if (!zActive) return this;
+        return scale(z);
+    }
     public float z() {return scaleX;}
 
     public TransformableElement position(final float x, final float y, final float z) { return position(x, y, z, R_UP | R_LEFT); }
@@ -76,7 +85,7 @@ public abstract class TransformableElement extends MovableElement {
         return scaleY;
     }
     public TransformableElement scaleY(final float scale) {
-        if (scaleY == scale) return this;
+        if (this.scaleY == scale) return this;
         oldScale.set(scaleX, scaleY);
         this.scaleY = scale;
         updateOrigin(scaleOrigin, scaleVector);
@@ -86,7 +95,7 @@ public abstract class TransformableElement extends MovableElement {
 
     public float scaleX() {return scaleX;}
     public TransformableElement scaleX(final float scale) {
-        if (scaleX == scale) return this;
+        if (this.scaleX == scale) return this;
         oldScale.set(scaleX, scaleY);
         this.scaleX = scale;
         updateOrigin(scaleOrigin, scaleVector);
@@ -107,11 +116,13 @@ public abstract class TransformableElement extends MovableElement {
 
 
     public TransformableElement rotateOrigin(final int from) {
+        if (this.rotateOrigin == from) return this;
         this.rotateOrigin = from;
         updateOrigin(rotateOrigin, rotateVector);
         return this;
     }
     public TransformableElement scaleOrigin(final int from) {
+        if (this.scaleOrigin == from) return this;
         this.scaleOrigin = from;
         updateOrigin(scaleOrigin, scaleVector);
         return this;

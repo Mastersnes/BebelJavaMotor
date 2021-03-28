@@ -1,6 +1,6 @@
 package com.bebel.api.events.mouse;
 
-import com.bebel.api.elements.basique.EventableElement;
+import com.bebel.api.elements.basique.predicats.EventableElement;
 import com.bebel.api.events.keyboard.KeyInput;
 
 import static com.bebel.api.events.mouse.MouseInputType.DOWN;

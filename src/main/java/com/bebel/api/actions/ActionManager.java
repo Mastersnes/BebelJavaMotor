@@ -6,10 +6,10 @@ import com.bebel.api.actions.organisation.ParallelAction;
 import com.bebel.api.actions.organisation.RepeatAction;
 import com.bebel.api.actions.organisation.SequenceAction;
 import com.bebel.api.actions.temporal.*;
-import com.bebel.api.elements.basique.AbstractElement;
-import com.bebel.api.elements.basique.DrawableElement;
-import com.bebel.api.elements.basique.MovableElement;
-import com.bebel.api.elements.basique.TransformableElement;
+import com.bebel.api.elements.basique.predicats.AbstractElement;
+import com.bebel.api.elements.basique.predicats.DrawableElement;
+import com.bebel.api.elements.basique.predicats.MovableElement;
+import com.bebel.api.elements.basique.predicats.TransformableElement;
 import react.RList;
 
 /**
