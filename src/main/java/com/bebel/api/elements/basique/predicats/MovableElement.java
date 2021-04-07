@@ -163,15 +163,9 @@ public abstract class MovableElement extends AbstractElement {
     /**
      * Deplace l'element
      */
-    public MovableElement moveFromUp(final float y) {
-        return move(0, y, R_UP);
-    }
-    public MovableElement moveFromDown(final float y) {
-        return move(0, y, R_DOWN);
-    }
-    public MovableElement moveFromLeft(final float x) {
-        return move(x, 0, R_LEFT);
-    }
+    public MovableElement moveFromUp(final float y) {return move(0, y, R_UP);}
+    public MovableElement moveFromDown(final float y) {return move(0, y, R_DOWN);}
+    public MovableElement moveFromLeft(final float x) {return move(x, 0, R_LEFT);}
     public MovableElement moveFromRight(final float x) {
         return move(x, 0, R_RIGHT);
     }
@@ -185,9 +179,7 @@ public abstract class MovableElement extends AbstractElement {
         return move(x, 0, R_RIGHT);
     }
     public MovableElement moveToRight(final float x) {return move(x, 0, R_LEFT);}
-    public MovableElement move(final float x, final float y) {
-        return move(x, y, R_UP | R_LEFT);
-    }
+    public MovableElement move(final float x, final float y) {return move(x, y, R_UP | R_LEFT); }
     public MovableElement move(final float ox, final float oy, final int from) {
         float x = ox, y = oy;
         if ((from & R_UP) != 0) y = -y;
@@ -271,5 +263,5 @@ public abstract class MovableElement extends AbstractElement {
     public MovableElement fitContent() {fitContent = true; return this;}
     public MovableElement dontFitContent() {fitContent = false; return this;}
 
-    protected abstract MovableElement updateOrigins();
+    protected abstract <ELEMENT extends TransformableElement> ELEMENT updateOrigins();
 }

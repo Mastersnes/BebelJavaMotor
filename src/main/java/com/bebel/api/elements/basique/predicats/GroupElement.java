@@ -23,18 +23,16 @@ import java.util.List;
  * Represente un element dessinable regroupant d'autres elements
  */
 public class GroupElement extends CollisionableElement {
-    private final SnapshotArray<AbstractElement> children = new SnapshotArray(true, 4, AbstractElement.class);
-    private final Matrix4 oldBatchTransform = new Matrix4();
-    private final Color oldBatchColor = new Color();
+    protected final SnapshotArray<AbstractElement> children = new SnapshotArray(true, 4, AbstractElement.class);
+    protected final Matrix4 oldBatchTransform = new Matrix4();
+    protected final Color oldBatchColor = new Color();
 
-    private AbstractElement background = null, foreground = null;
-    private Signal<Boolean> childrenChanged;
+    protected DrawableElement background = null, foreground = null;
+    protected Signal<Boolean> childrenChanged;
 
-    public GroupElement(final String name) {this(name, 0, 0);}
-    public GroupElement(final String name, final PhysicsAsset physics) {this(name, physics, 0, 0);}
-    public GroupElement(final String name, float w, float h) {super(name, null, null, w, h);}
-    public GroupElement(final String name, final PhysicsAsset physics, float w, float h) {
-        super(name, null, physics, w, h);
+    public GroupElement(final String name) {this(name, null);}
+    public GroupElement(final String name, final PhysicsAsset physics) {
+        super(name, null, physics);
     }
 
     @Override
@@ -71,12 +69,10 @@ public class GroupElement extends CollisionableElement {
     public CollisionableElement background(final TextureAsset element, final PhysicsAsset physics) {
         return background(new CollisionableElement("background", element, physics));
     }
-    public <ELEMENT extends AbstractElement> ELEMENT background(final ELEMENT element) {
+    public <ELEMENT extends DrawableElement> ELEMENT background(final ELEMENT element) {
         if (background != null) remove(background);
         background = null;
-        background = insert(0, element);
-        if (background instanceof TransformableElement)
-            ((TransformableElement) background).unactiveZ();
+        background = (DrawableElement) insert(0, element).unactiveZ();
         return element;
     }
 
@@ -86,24 +82,18 @@ public class GroupElement extends CollisionableElement {
     public CollisionableElement foreground(final TextureAsset element, final PhysicsAsset physics) {
         return foreground(new CollisionableElement("foreground", element, physics));
     }
-    public <ELEMENT extends AbstractElement> ELEMENT foreground(final ELEMENT element) {
+    public <ELEMENT extends DrawableElement> ELEMENT foreground(final ELEMENT element) {
         if (foreground != null) remove(foreground);
         foreground = null;
-        foreground = add(element);
-        if (foreground instanceof TransformableElement)
-            ((TransformableElement) foreground).unactiveZ();
+        foreground = (DrawableElement) add(element).unactiveZ();
         return element;
     }
 
-    public DrawableElement add(final String name, final TextureAsset element) {return add(name, element, 0f, 0f);}
-    public DrawableElement add(final String name, final TextureAsset element, final float w, final float h) {
-        return add(new DrawableElement(name, element, w, h));
+    public DrawableElement add(final String name, final TextureAsset element) {
+        return add(new DrawableElement(name, element));
     }
     public CollisionableElement add(final String name, final TextureAsset element, final PhysicsAsset physics) {
-        return add(name, element, physics, 0, 0);
-    }
-    public CollisionableElement add(final String name, final TextureAsset element, final PhysicsAsset physics, final float w, final float h) {
-        return add(new CollisionableElement(name, element, physics, w, h));
+        return add(new CollisionableElement(name, element, physics));
     }
     public <ELEMENT extends AbstractElement> ELEMENT add(final ELEMENT element) {
         if (foreground != null) return addBefore(foreground, element);
@@ -142,7 +132,9 @@ public class GroupElement extends CollisionableElement {
             if (screen != null) screen.unfocus(element);
             element.removed();
             element.setParent(null); element.setScreen(null);
-            element.setScene(null);
+            if (element instanceof CollisionableElement) {
+                ((CollisionableElement) element).setScene(null);
+            }
             if (childrenChanged != null) childrenChanged.emit(false);
             return element;
         }
@@ -153,7 +145,9 @@ public class GroupElement extends CollisionableElement {
         for(final AbstractElement child : children.begin()) {
             if (child == null || !child.isAdded()) continue;
             child.setScreen(null); child.setParent(null);
-            child.setScene(null);
+            if (child instanceof CollisionableElement) {
+                ((CollisionableElement) child).setScene(null);
+            }
             child.removed();
         }
         children.end();
@@ -162,11 +156,11 @@ public class GroupElement extends CollisionableElement {
         return this;
     }
 
-    public <ELEMENT extends AbstractElement> ELEMENT find(final String name) {
+    public AbstractElement find(final String name) {
         try {
             for (final AbstractElement child : children.begin()) {
                 if (child == null || !child.isAdded()) continue;
-                if (StringUtils.equals(child.name, name)) return (ELEMENT) child;
+                if (StringUtils.equals(child.name, name)) return child;
             }
         }finally {
             children.end();
@@ -175,7 +169,7 @@ public class GroupElement extends CollisionableElement {
             for (final AbstractElement child : children.begin()) {
                 if (child == null || !child.isAdded()) continue;
                 if (child instanceof GroupElement) {
-                    final ELEMENT element = ((GroupElement) child).find(name);
+                    final AbstractElement element = ((GroupElement) child).find(name);
                     if (element != null) return element;
                 }
             }
@@ -367,8 +361,8 @@ public class GroupElement extends CollisionableElement {
         child.update(delta);
     }
 
-    public GroupElement onChildrenChanged(final Signal.Listener<Boolean> event) {
+    public <ELEMENT extends GroupElement> ELEMENT onChildrenChanged(final Signal.Listener<Boolean> event) {
         if (childrenChanged == null) childrenChanged = Signal.create();
-        childrenChanged.connect(event); return this;
+        childrenChanged.connect(event); return (ELEMENT) this;
     }
 }

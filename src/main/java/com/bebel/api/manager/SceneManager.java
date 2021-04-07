@@ -3,6 +3,7 @@ package com.bebel.api.manager;
 import com.badlogic.gdx.math.Interpolation;
 import com.bebel.api.BebelScreen;
 import com.bebel.api.actions.ActionManager;
+import com.bebel.api.elements.complex.BebelScene;
 
 /**
  * Manager permettant de passer d'une scene à une autre

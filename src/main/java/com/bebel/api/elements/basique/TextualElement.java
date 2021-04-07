@@ -19,7 +19,7 @@ public class TextualElement extends CollisionableElement {
         this(name, font, null);
     }
     public TextualElement(final String name, final FontAsset font, final PhysicsAsset physics) {
-        super(name, null, physics, 0, 0);
+        super(name, null, physics);
         font(font);
     }
 

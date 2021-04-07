@@ -136,6 +136,7 @@ public abstract class TransformableElement extends MovableElement {
 
     public TransformableElement scale(final float scale) {scaleX(scale); return scaleY(scale);}
 
+    @Override
     protected TransformableElement updateOrigins() {
         updateOrigin(scaleOrigin, scaleVector);
         return updateOrigin(rotateOrigin, rotateVector);

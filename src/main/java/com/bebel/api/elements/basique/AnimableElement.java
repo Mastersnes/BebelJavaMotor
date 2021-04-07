@@ -29,8 +29,8 @@ public class AnimableElement extends CollisionableElement {
 
     protected RMap<String, BebelBodyDef> bodies = RMap.create();
 
-    public AnimableElement(final String name, final float w, final float h) {super(name, null, null, w, h);}
-    public AnimableElement(final String name, final PhysicsAsset physics, final float w, final float h) {super(name, null, physics, w, h);}
+    public AnimableElement(final String name) {super(name, null, null);}
+    public AnimableElement(final String name, final PhysicsAsset physics) {super(name, null, physics);}
 
     public BebelAnimation getAnim(final String name) {
         if (!animations.containsKey(name)) {
@@ -70,6 +70,12 @@ public class AnimableElement extends CollisionableElement {
      * Joue une animation.
      * Si l'animation n'a pas changé, on la continue simplement.
      */
+    public boolean playIfExist(final String name) {
+        if (animations.containsKey(name)) {
+            return play(name) != null;
+        }
+        return false;
+    }
     public BebelAnimation play(final String name) {
         if (currentAnim != null) {
             if (currentAnimIs(name)) return currentAnim.resume();

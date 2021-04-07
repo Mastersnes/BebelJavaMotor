@@ -34,23 +34,26 @@ public class BebelAnimation implements Pool.Poolable, Updatable {
         name(name);
     }
 
-    public void animation(AnimationTemplate animation) {
+    public BebelAnimation animation(AnimationTemplate animation) {
         this.animation = animation;
+        return this;
     }
 
-    public void name(String name) {
+    public BebelAnimation name(String name) {
         this.name = name;
+        return this;
     }
 
-    public void flip(boolean flipX, boolean flipY) {
+    public BebelAnimation flip(boolean flipX, boolean flipY) {
         if (flipX) this.flipX = !this.flipX;
         if (flipY) this.flipY = !this.flipY;
+        return this;
     }
     public boolean isFlipX() {return flipX;}
-    public void flipX() {flip(true, false);}
+    public BebelAnimation flipX() {return flip(true, false);}
 
     public boolean isFlipY() {return flipY;}
-    public void flipY() {flip(true, false);}
+    public BebelAnimation flipY() {return flip(true, false);}
 
     public String name() {
         return name;

@@ -1,5 +1,6 @@
-package com.bebel.api.manager;
+package com.bebel.api.elements.complex;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -9,6 +10,11 @@ import com.bebel.api.elements.basique.predicats.AbstractElement;
 import com.bebel.api.elements.basique.predicats.CollisionableElement;
 import com.bebel.api.elements.basique.predicats.GroupElement;
 import com.bebel.api.elements.basique.predicats.TransformableElement;
+import com.bebel.api.manager.SceneManager;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.bebel.api.Global.*;
 
@@ -22,6 +28,7 @@ public abstract class BebelScene extends GroupElement {
     protected float accumulator;
 
     protected float axeProfondeur, profondeur;
+    protected List<Vector2> jalons;
 
 
     public BebelScene(String name) {super(name);}
@@ -78,6 +85,32 @@ public abstract class BebelScene extends GroupElement {
     public World world() {return world;}
 
     /**
+     * Permet d'ajouter des jalons à la scene
+     * @param jalons
+     */
+    public void addJalons(final Vector2... jalons) {
+        if (this.jalons == null) this.jalons = new ArrayList<>();
+        this.jalons.addAll(Arrays.asList(jalons));
+    }
+    public void addJalons(final float... coords) {
+        if (this.jalons == null) this.jalons = new ArrayList<>();
+        if (coords.length % 2 != 0) {
+            Gdx.app.error("Scene", "Erreur, le nombre de parametre est incorrect");
+            Gdx.app.exit();
+        }
+        for (int i=0; i<coords.length; i+=2) {
+            jalons.add(new Vector2(coords[i], coords[i+1]));
+        }
+    }
+
+    final Vector2 tmpObj = new Vector2();
+//    public Vector2 findClosestJalon(final float x, final float y) {return findClosestJalon(tmpObj.set(x, y));}
+//    public Vector2 findClosestJalon(final Vector2 obj) {
+//        if (jalons == null || jalons.isEmpty()) return null;
+//        for (final Vector2 jalon : jalons)
+//    }
+
+    /**
      * DISPLAYABLE
      */
     @Override
@@ -124,7 +157,8 @@ public abstract class BebelScene extends GroupElement {
     @Override
     public <ELEMENT extends AbstractElement> ELEMENT insert(int index, ELEMENT element) {
         final ELEMENT insertedElement = super.insert(index, element);
-        if (insertedElement != null) insertedElement.setScene(this);
+        if (insertedElement != null && insertedElement instanceof CollisionableElement)
+            ((CollisionableElement) insertedElement).setScene(this);
         return insertedElement;
     }
 

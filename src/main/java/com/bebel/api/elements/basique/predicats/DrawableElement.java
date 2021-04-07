@@ -28,13 +28,7 @@ public class DrawableElement extends EventableElement {
     protected float alpha = 1;
 
     public DrawableElement(final String name, final TextureAsset image) {
-        this(name, image, 0, 0);
-        fitContent();
-    }
-
-    public DrawableElement(final String name, final TextureAsset image, final float w, final float h) {
         super(name);
-        if (w > 0 && h > 0) size(w, h);
         if (image != null) image(image);
     }
 
@@ -155,7 +149,7 @@ public class DrawableElement extends EventableElement {
         return this;
     }
 
-    public TransformableElement onAlphaChanged(final SignalView.Listener<Float> action) {
+    public DrawableElement onAlphaChanged(final SignalView.Listener<Float> action) {
         if (onAlphaChanged == null) onAlphaChanged = Signal.create();
         onAlphaChanged.connect(action);
         return this;

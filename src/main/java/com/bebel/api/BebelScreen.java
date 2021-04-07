@@ -43,7 +43,8 @@ public abstract class BebelScreen implements Screen, Disposable {
 
         game = Global.game;
 
-        root = new GroupElement("root", viewport.getWorldWidth(), viewport.getWorldHeight());
+        root = new GroupElement("root");
+        root.size(viewport.getWorldWidth(), viewport.getWorldHeight());
         root.setScreen(this);
         root.create();
 

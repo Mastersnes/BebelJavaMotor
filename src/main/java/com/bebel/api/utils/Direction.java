@@ -17,7 +17,7 @@ public enum Direction {
     protected final boolean vertical;
 
     public static final String D_NULL = NULL.code;
-    public static final String D_IDLE = "IDLE";
+    public static final String D_IDLE = "_IDLE";
     public static final String D_UP = UP.code;
     public static final String D_DOWN = DOWN.code;
     public static final String D_LEFT = LEFT.code;
@@ -33,6 +33,28 @@ public enum Direction {
         this.vertical = vertical;
     }
 
+    /**
+     * Permet de retrouver une direction en fonction de son sens et de sa verticalité
+     * @param sens
+     * @param vertical
+     * @return
+     */
+    public static Direction find(final int sens, final boolean vertical) {
+        if (vertical) {
+            if (sens > 0) return DOWN;
+            else if (sens < 0) return UP;
+        }else {
+            if (sens > 0) return RIGHT;
+            else if (sens < 0) return LEFT;
+        }
+        return NULL;
+    }
+
+    /**
+     * Permet de retrouver une direction en fonction de la clef de clavier
+     * @param key
+     * @return
+     */
     public static Direction byKey(final int key) {
         switch (key) {
             case Input.Keys.UP: case Input.Keys.Z: case Input.Keys.W:
