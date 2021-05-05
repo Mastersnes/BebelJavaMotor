@@ -113,11 +113,11 @@ public class Personnage extends AnimableElement {
     private void checkObjectifs() {
         if (currentObjectif == null && !objectifs.isEmpty()) currentObjectif = objectifs.remove(objectifs.size()-1);
         if (currentObjectif != null) {
-            currentDirection.x = (int) Math.signum(currentObjectif.x - x);
-            currentDirection.y = (int) Math.signum(y - currentObjectif.y);
+            currentDirection.x = (int) Math.signum(currentObjectif.x - x());
+            currentDirection.y = (int) Math.signum(y() - currentObjectif.y);
 
-            if ((currentObjectif.x >= x - MARGE_OBJECTIF && currentObjectif.x <= (x + width + MARGE_OBJECTIF)) &&
-                (currentObjectif.y >= y - MARGE_OBJECTIF && currentObjectif.y <= (y + height + MARGE_OBJECTIF))) {
+            if ((currentObjectif.x >= x() - MARGE_OBJECTIF && currentObjectif.x <= (x() + width + MARGE_OBJECTIF)) &&
+                (currentObjectif.y >= y() - MARGE_OBJECTIF && currentObjectif.y <= (y() + height + MARGE_OBJECTIF))) {
                 currentObjectif = null;
             }
         }
@@ -148,8 +148,8 @@ public class Personnage extends AnimableElement {
             yIndicator = Direction.find(currentDirection.y, true);
 
             if (playIfExist(yIndicator.code() + xIndicator.code())) return;
-            else if (playIfExist(yIndicator.code())) return;
             else if (playIfExist(xIndicator.code())) return;
+            else if (playIfExist(yIndicator.code())) return;
             else {
                 final StringBuilder errorMsg = new StringBuilder("Erreur, La direction n'existe pas : ");
                 errorMsg.append("[").append(yIndicator.code() + xIndicator.code()).append("] ou ");

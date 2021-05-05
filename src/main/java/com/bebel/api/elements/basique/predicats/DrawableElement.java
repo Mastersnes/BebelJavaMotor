@@ -27,7 +27,8 @@ public class DrawableElement extends EventableElement {
     protected Color tint = Color.WHITE.cpy();
     protected float alpha = 1;
 
-    public DrawableElement(final String name, final TextureAsset image) {
+    public DrawableElement(final String name, final TextureAsset image) {this(name, image.getRegion());}
+    public DrawableElement(final String name, final TextureRegion image) {
         super(name);
         if (image != null) image(image);
     }
@@ -38,6 +39,7 @@ public class DrawableElement extends EventableElement {
     @Override
     public void debugMe() {
         super.debugMe();
+        showBounds(Color.RED.cpy());
         alpha(0.8f);
         input.onKeyDown(k -> {
             if (k.contains(Input.Keys.F)) {
@@ -67,8 +69,8 @@ public class DrawableElement extends EventableElement {
 
         final Matrix4 t = batch.getTransformMatrix();
 
-        float x = this.x;
-        float y = this.y;
+        float x = this.x();
+        float y = this.y();
 
         t.translate(x, y, 0);
 
@@ -96,15 +98,16 @@ public class DrawableElement extends EventableElement {
     protected void paintImpl(final SpriteBatch batch){
         draw(batch, image);
         if (this instanceof GroupElement) return;
-        if (this.debug || parent.debug) {
-            batch.flush();
+        if (this.boundsColor != null || parent.boundsColor != null) {
+            batch.end();
             final ShapeRenderer shape = Global.shape;
             shape.setProjectionMatrix(batch.getProjectionMatrix());
             shape.setTransformMatrix(batch.getTransformMatrix());
-            shape.setColor(Color.RED.cpy());
+            shape.setColor(boundsColor != null ? boundsColor : parent.boundsColor);
             shape.begin(ShapeRenderer.ShapeType.Line);
             shape.rect(0, 0, width, height);
             shape.end();
+            batch.begin();
         }
     }
 
@@ -176,7 +179,7 @@ public class DrawableElement extends EventableElement {
         return image(texture);
     }
     public DrawableElement image(final Texture image) {return image(new TextureRegion(image));}
-    public DrawableElement image(final TextureAsset image) {return image(new TextureRegion(image.get()));}
+    public DrawableElement image(final TextureAsset image) {return image(image.get());}
     public DrawableElement image(final TextureRegion image) {this.image = image; return this;}
 
     protected SimpleVector<Boolean> oldFlip = new SimpleVector<>();

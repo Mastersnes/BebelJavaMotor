@@ -64,7 +64,7 @@ public class BebelProcessor implements InputProcessor {
     protected void dispatchMouse(final MouseInputType type) {
         mouse.set(keysDown);
         final GroupElement root = screen.getRoot();
-        final EventableElement hitLayer = root.hitTest(this.scratch.set(mouse.x, mouse.y));
+        final EventableElement hitLayer = root.hitTest(this.scratch.set(mouse.x(), mouse.y()));
         if (hitLayer != null) {
             if (type == DOWN) {
                 if (mouse.isLeft() && !screen.isFocus(hitLayer)) {

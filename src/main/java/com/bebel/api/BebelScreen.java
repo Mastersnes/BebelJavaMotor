@@ -152,7 +152,7 @@ public abstract class BebelScreen implements Screen, Disposable {
 
     public void activeClickChecker() {
         root.onClick(m -> {
-            Gdx.app.log("Mouse", "[" + m.x + ", " + m.y + "]");
+            Gdx.app.log("Mouse", "[" + m.x() + ", " + m.y() + "]");
         });
     }
 

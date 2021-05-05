@@ -3,6 +3,7 @@ package com.bebel.api.elements.basique.predicats;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -63,10 +64,12 @@ public class GroupElement extends CollisionableElement {
     /**
      * CHILDREN
      */
-    public DrawableElement background(final TextureAsset element) {
+    public DrawableElement background(final TextureAsset element) {return background(element.getRegion());}
+    public DrawableElement background(final TextureRegion element) {
         return background(new DrawableElement("background", element));
     }
-    public CollisionableElement background(final TextureAsset element, final PhysicsAsset physics) {
+    public CollisionableElement background(final TextureAsset element, final PhysicsAsset physics) {return background(element.getRegion(), physics);}
+    public CollisionableElement background(final TextureRegion element, final PhysicsAsset physics) {
         return background(new CollisionableElement("background", element, physics));
     }
     public <ELEMENT extends DrawableElement> ELEMENT background(final ELEMENT element) {
@@ -76,10 +79,12 @@ public class GroupElement extends CollisionableElement {
         return element;
     }
 
-    public DrawableElement foreground(final TextureAsset element) {
+    public DrawableElement foreground(final TextureAsset element) {return foreground(element.getRegion());}
+    public DrawableElement foreground(final TextureRegion element) {
         return foreground(new DrawableElement("foreground", element));
     }
-    public CollisionableElement foreground(final TextureAsset element, final PhysicsAsset physics) {
+    public CollisionableElement foreground(final TextureAsset element, final PhysicsAsset physics) {return foreground(element.getRegion(), physics);}
+    public CollisionableElement foreground(final TextureRegion element, final PhysicsAsset physics) {
         return foreground(new CollisionableElement("foreground", element, physics));
     }
     public <ELEMENT extends DrawableElement> ELEMENT foreground(final ELEMENT element) {
@@ -89,10 +94,12 @@ public class GroupElement extends CollisionableElement {
         return element;
     }
 
-    public DrawableElement add(final String name, final TextureAsset element) {
+    public DrawableElement add(final String name, final TextureAsset element) {return add(name, element.getRegion());}
+    public DrawableElement add(final String name, final TextureRegion element) {
         return add(new DrawableElement(name, element));
     }
-    public CollisionableElement add(final String name, final TextureAsset element, final PhysicsAsset physics) {
+    public CollisionableElement add(final String name, final TextureAsset element, final PhysicsAsset physics) {return add(name, element.getRegion(), physics);}
+    public CollisionableElement add(final String name, final TextureRegion element, final PhysicsAsset physics) {
         return add(new CollisionableElement(name, element, physics));
     }
     public <ELEMENT extends AbstractElement> ELEMENT add(final ELEMENT element) {

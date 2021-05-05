@@ -13,10 +13,23 @@ import java.util.Map;
  * Represente une ressource de type "Image fixe"
  */
 public class TextureAsset extends AbstractAsset<Texture> {
+    protected AtlasAsset atlas;
+    protected String regionToFind;
+
     protected Map<String, AnimationTemplate> animations = new HashMap<>();
 
+    public TextureAsset(final AtlasAsset atlas, final String regionToFind) {
+        super(null, null);
+        this.atlas = atlas;
+        this.regionToFind = regionToFind;
+    }
     public TextureAsset(final String path) {
         super(path, Texture.class);
+    }
+
+    public TextureRegion getRegion() {
+        if (atlas != null) return atlas.get().findRegion(regionToFind);
+        return new TextureRegion(super.get());
     }
 
     /**

@@ -35,7 +35,7 @@ public abstract class AbstractAsset<TYPE> {
     public AbstractAsset(final String path, final Class<TYPE> type) {
         this.path = path;
         this.type = type;
-        assets.add(this);
+        if (path != null) assets.add(this);
     }
 
     public TYPE get() {

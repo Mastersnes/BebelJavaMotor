@@ -2,6 +2,8 @@ package com.bebel.api.elements.basique.predicats;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.math.Vector2;
+import com.bebel.api.Global;
 import pythagoras.f.Dimension;
 import pythagoras.f.MathUtil;
 import pythagoras.f.Point;
@@ -27,18 +29,18 @@ public abstract class MovableElement extends AbstractElement {
         input.whileKeyDown(k -> {
             // POSITION
             if (k.containsOnlyOneOf(Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.DOWN)) {
-                if (k.contains(Input.Keys.LEFT)) move(-1, 0);
-                else if (k.contains(Input.Keys.RIGHT)) move(1, 0);
-                if (k.contains(Input.Keys.UP)) move(0, -1);
-                else if (k.contains(Input.Keys.DOWN)) move(0, 1);
+                if (k.contains(Input.Keys.LEFT)) move(-Global.scale, 0);
+                else if (k.contains(Input.Keys.RIGHT)) move(Global.scale, 0);
+                if (k.contains(Input.Keys.UP)) move(0, -Global.scale);
+                else if (k.contains(Input.Keys.DOWN)) move(0, Global.scale);
             }
 
             //TAILLE
             if (k.contains(Input.Keys.S)) {
-                if (k.contains(Input.Keys.LEFT)) resize(-1, 0);
-                else if (k.contains(Input.Keys.RIGHT)) resize(1, 0);
-                if (k.contains(Input.Keys.UP)) resize(0, 1);
-                else if (k.contains(Input.Keys.DOWN)) resize(0, -1);
+                if (k.contains(Input.Keys.LEFT)) resize(-Global.scale, 0);
+                else if (k.contains(Input.Keys.RIGHT)) resize(Global.scale, 0);
+                if (k.contains(Input.Keys.UP)) resize(0, Global.scale);
+                else if (k.contains(Input.Keys.DOWN)) resize(0, -Global.scale);
             }
         });
         input.onKeyDown(k -> {
@@ -48,7 +50,7 @@ public abstract class MovableElement extends AbstractElement {
            }
 
            if (k.is(Input.Keys.COMMA)) {
-               Gdx.app.log(name + "-POSITION", x + ", " + relativeY());
+               Gdx.app.log(name + "-POSITION", x() + ", " + relativeY());
                Gdx.app.log(name + "-TAILLE", width + ", " + height);
            }
         });
@@ -57,30 +59,28 @@ public abstract class MovableElement extends AbstractElement {
     /**
      * Movable
      */
-    protected final Point oldPosition = new Point();
-    protected Signal<Point> onPositionChanged;
-    protected float x, y;
+    protected final Vector2 oldPosition = new Vector2();
+    protected final Vector2 position = new Vector2();
+    protected Signal<Vector2> onPositionChanged;
 
     public MovableElement x(final float x) {
-        if (this.x == x) return this;
-        oldPosition.set(this.x, this.y);
-        this.x = x;
+        if (this.x() == x) return this;
+        oldPosition.set(this.x(), this.y());
+        this.position.x = x;
         if (onPositionChanged != null) onPositionChanged.emit(oldPosition);
         return this;
     }
-    public float x() {
-        return x;
-    }
+    public float x() {return position.x;}
 
     public MovableElement y(final float y) {
-        if (this.y == y) return this;
-        oldPosition.set(this.x, this.y);
-        this.y = y;
+        if (this.y() == y) return this;
+        oldPosition.set(this.x(), this.y());
+        this.position.y = y;
         if (onPositionChanged != null) onPositionChanged.emit(oldPosition);
         return this;
     }
     public float y() {
-        return y;
+        return position.y;
     }
     public float relativeY() {
         return relativeY(y());
@@ -89,8 +89,8 @@ public abstract class MovableElement extends AbstractElement {
         return parentHeight() - height() - y;
     }
 
-    public MovableElement onMove(final SignalView.Listener<Point> action) {return onPositionChanged(action);}
-    public MovableElement onPositionChanged(final SignalView.Listener<Point> action) {
+    public MovableElement onMove(final SignalView.Listener<Vector2> action) {return onPositionChanged(action);}
+    public MovableElement onPositionChanged(final SignalView.Listener<Vector2> action) {
         if (onPositionChanged == null) onPositionChanged = Signal.create();
         onPositionChanged.connect(action);
         return this;

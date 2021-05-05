@@ -11,17 +11,15 @@ import static com.badlogic.gdx.utils.Pools.obtain;
  * Evenement de base de la souris
  */
 public class MouseInput extends SimpleInput {
-    public float x, y;
+    protected final Vector2 position = new Vector2();
     public int pointer, button, scroll, clickNb;
 
     public MouseInput(){}
 
-    public float x() {
-        return x;
-    }
-
+    public Vector2 position() {return position;}
+    public float x() {return position.x;}
     public float y() {
-        return y;
+        return position.y;
     }
 
     public int pointer() {
@@ -58,16 +56,14 @@ public class MouseInput extends SimpleInput {
     @Override
     public void reset() {
         super.reset();
-        x = y = pointer = button = scroll = clickNb = -1;
+        position.x = position.y = pointer = button = scroll = clickNb = -1;
     }
 
     /**
      * Permet de renseigner la position de la sourie dans le viewport
      */
-    protected Vector2 tmp = new Vector2();
     public void position(final float x, final float y, final Viewport viewport) {
-        tmp.set(x, y);
-        viewport.unproject(tmp);
-        this.x = tmp.x; this.y = tmp.y;
+        position.set(x, y);
+        viewport.unproject(position);
     }
 }

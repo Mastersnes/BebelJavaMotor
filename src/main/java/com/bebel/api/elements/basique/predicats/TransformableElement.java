@@ -3,6 +3,7 @@ package com.bebel.api.elements.basique.predicats;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.bebel.api.Global;
 import pythagoras.f.Point;
 import react.Signal;
 import react.SignalView;
@@ -24,8 +25,8 @@ public abstract class TransformableElement extends MovableElement {
         input.whileKeyDown(k -> {
             // ROTATION
             if (k.contains(Input.Keys.R)) {
-                if (k.contains(Input.Keys.LEFT)) rotate(-1);
-                else if (k.contains(Input.Keys.RIGHT)) rotate(1);
+                if (k.contains(Input.Keys.LEFT)) rotate(-Global.scale);
+                else if (k.contains(Input.Keys.RIGHT)) rotate(Global.scale);
             }
         });
         input.onKeyDown(k -> {
@@ -165,8 +166,8 @@ public abstract class TransformableElement extends MovableElement {
      * @return
      */
     public Vector2 inverseTransform(Vector2 coords) {
-        coords.x -= x;
-        coords.y -= y;
+        coords.x -= x();
+        coords.y -= y();
 
         coords.x -= scaleVector.x;
         coords.y -= scaleVector.y;
@@ -191,8 +192,8 @@ public abstract class TransformableElement extends MovableElement {
      * @return
      */
     public Vector2 appliqueTransform(Vector2 coords) {
-        coords.x += x;
-        coords.y += y;
+        coords.x += x();
+        coords.y += y();
 
         coords.x += scaleVector.x;
         coords.y += scaleVector.y;

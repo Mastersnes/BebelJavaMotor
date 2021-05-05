@@ -1,6 +1,7 @@
 package com.bebel.api.elements.basique.predicats;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
@@ -19,7 +20,7 @@ import react.SignalView;
  * Represente un element pouvant subir des collisions
  */
 public class CollisionableElement extends DrawableElement {
-    public CollisionableElement(final String name, final TextureAsset image, final PhysicsAsset physics) {
+    public CollisionableElement(final String name, final TextureRegion image, final PhysicsAsset physics) {
         super(name, image);
         if (physics != null) activePhysics(physics);
     }
@@ -70,7 +71,7 @@ public class CollisionableElement extends DrawableElement {
         if (scaleX + scaleY != 2) scaleOrigin(R_DOWN | R_LEFT);
         body = physics.createBody(bodyDef.name(), world, Global.scale * scaleX, Global.scale * scaleY);
         body.setType(bodyDef.bodyType());
-        body.setTransform(x, y, rotation);
+        body.setTransform(x(), y(), rotation);
         body.setUserData(this);
 
         if (saver != null) {

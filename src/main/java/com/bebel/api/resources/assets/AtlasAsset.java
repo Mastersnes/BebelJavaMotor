@@ -20,6 +20,10 @@ public class AtlasAsset extends AbstractAsset<TextureAtlas> {
         super(path, TextureAtlas.class);
     }
 
+    public TextureAsset findRegion(final String name) {
+        return new TextureAsset(this, name);
+    }
+
     /**
      * Creer un template d'animation à partir de toute les frames du fichier
      * @param frameDuration

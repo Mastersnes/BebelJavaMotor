@@ -162,7 +162,7 @@ public abstract class AbstractShader implements Updatable {
         if (layer instanceof EventableElement) {
             ((EventableElement) layer).onMouseMove(m -> {
                 shader.bind();
-                shader.setUniformf("u_mouse", m.x, m.y);
+                shader.setUniformf("u_mouse", m.x(), m.y());
             });
         }
 
