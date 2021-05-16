@@ -165,7 +165,7 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     /**
      * Flags
      */
-    protected boolean visible, interactive;
+    protected boolean visible, interactive, dynamic;
 
     public boolean visible() {return visible;}
     public AbstractElement visible(boolean visible) { this.visible = visible; return this;}
@@ -183,6 +183,14 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
         }
         return this;
     }
+
+    /**
+     * Permet de determiner si l'element doit interagir visuellement avec les autres
+     * Dans le cas d'un changement de couche par exemple
+     */
+    public AbstractElement setDynamic() {dynamic = true; return this;}
+    public AbstractElement setFixe() {dynamic = false; return this;}
+    public boolean isDynamic() {return dynamic;}
 
     /**
      * SHADER

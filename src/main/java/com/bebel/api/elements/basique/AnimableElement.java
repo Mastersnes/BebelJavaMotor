@@ -46,7 +46,9 @@ public class AnimableElement extends CollisionableElement {
     }
     public void addAnim(final String name, final BebelAnimation animation) {addAnim(name, animation, null, null);}
     public void addAnim(final String name, final BebelAnimation animation, final String bodyName, final BodyDef.BodyType bodyType) {
-        addAnim(name, animation, new BebelBodyDef(bodyName, bodyType));
+        if (StringUtils.isEmpty(bodyName) || bodyType == null)
+            addAnim(name, animation, null);
+        else addAnim(name, animation, new BebelBodyDef(bodyName, bodyType));
     }
     public void addAnim(final String name, final BebelAnimation animation, final BebelBodyDef body) {
         animation.name(name); animations.put(name, animation);
@@ -54,7 +56,9 @@ public class AnimableElement extends CollisionableElement {
     }
     public void addAnim(final String name, final AnimationTemplate animation) {addAnim(name, animation, null);}
     public void addAnim(final String name, final AnimationTemplate animation, final String bodyName, final BodyDef.BodyType bodyType) {
-        addAnim(name, animation, new BebelBodyDef(bodyName, bodyType));
+        if (StringUtils.isEmpty(bodyName) || bodyType == null)
+            addAnim(name, animation, null);
+        else addAnim(name, animation, new BebelBodyDef(bodyName, bodyType));
     }
     public void addAnim(final String name, final AnimationTemplate animation, final BebelBodyDef body) {
         addAnim(name, animation.instance(name), body);

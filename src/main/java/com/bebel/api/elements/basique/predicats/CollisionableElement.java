@@ -13,6 +13,7 @@ import com.bebel.api.resources.assets.TextureAsset;
 import com.bebel.api.utils.BebelBodyDef;
 import com.bebel.api.utils.BodySaver;
 import com.codeandweb.physicseditor.PhysicsShapeCache;
+import org.apache.commons.lang3.StringUtils;
 import react.Signal;
 import react.SignalView;
 
@@ -48,16 +49,19 @@ public class CollisionableElement extends DrawableElement {
 
     public Body body() {return body;}
     public Body body(final String bodyName, final BodyDef.BodyType bodyType) {
-        return body(new BebelBodyDef(bodyName, bodyType));
+        if (StringUtils.isEmpty(bodyName) || bodyType == null) return body(null);
+        else return body(new BebelBodyDef(bodyName, bodyType));
     }
     public Body body(final BebelBodyDef bodyDef) {
-        if (scene != null && scene.world() == null) {
-            Gdx.app.error("Physics", "Erreur, vous devez d'abord activer la physique de la scene");
-            Gdx.app.exit();
-        }
-        if (physics == null) {
-            Gdx.app.error("Physics", "Erreur, vous devez d'abord activer la physique de l'element'");
-            Gdx.app.exit();
+        if (bodyDef != null) {
+            if (scene != null && scene.world() == null) {
+                Gdx.app.error("Physics", "Erreur, vous devez d'abord activer la physique de la scene");
+                Gdx.app.exit();
+            }
+            if (physics == null) {
+                Gdx.app.error("Physics", "Erreur, vous devez d'abord activer la physique de l'element'");
+                Gdx.app.exit();
+            }
         }
         this.bodyDef = bodyDef;
         final World world = scene.world();
@@ -69,13 +73,17 @@ public class CollisionableElement extends DrawableElement {
         }
 
         if (scaleX + scaleY != 2) scaleOrigin(R_DOWN | R_LEFT);
-        body = physics.createBody(bodyDef.name(), world, Global.scale * scaleX, Global.scale * scaleY);
-        body.setType(bodyDef.bodyType());
-        body.setTransform(x(), y(), rotation);
-        body.setUserData(this);
+        if (bodyDef == null) body = null;
+        else {
+            body = physics.createBody(bodyDef.name(), world, Global.scale * scaleX, Global.scale * scaleY);
+            body.setType(bodyDef.bodyType());
+            body.setTransform(x(), y(), rotation);
+            body.setUserData(this);
+        }
 
         if (saver != null) {
-            saver.restitute(body); saver.free();
+            if (body != null) saver.restitute(body);
+            saver.free();
         }
 
         return body;

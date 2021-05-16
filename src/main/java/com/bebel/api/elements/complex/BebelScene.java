@@ -6,14 +6,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
-import com.bebel.api.elements.basique.predicats.AbstractElement;
-import com.bebel.api.elements.basique.predicats.CollisionableElement;
-import com.bebel.api.elements.basique.predicats.GroupElement;
-import com.bebel.api.elements.basique.predicats.TransformableElement;
+import com.bebel.api.elements.basique.predicats.*;
 import com.bebel.api.manager.SceneManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import static com.bebel.api.Global.*;
@@ -22,6 +20,12 @@ import static com.bebel.api.Global.*;
  * Element representant une scene d'un jeu
  */
 public abstract class BebelScene extends GroupElement {
+    protected final Comparator<AbstractElement> yComparator = (a, b) -> {
+        if (!(a instanceof MovableElement && b instanceof MovableElement)) return 0;
+        if (!(a.isDynamic() && b.isDynamic())) return 0;
+        return (int) (((MovableElement) b).y() - ((MovableElement) a).y());
+    };
+
     protected World world;
     protected Box2DDebugRenderer b2dr;
     protected Array<Body> bodies = new Array<>();
@@ -30,6 +34,7 @@ public abstract class BebelScene extends GroupElement {
     protected float axeProfondeur, profondeur;
     protected List<Vector2> jalons;
 
+    protected boolean sortByY;
 
     public BebelScene(String name) {super(name);}
 
@@ -103,12 +108,7 @@ public abstract class BebelScene extends GroupElement {
         }
     }
 
-    final Vector2 tmpObj = new Vector2();
-//    public Vector2 findClosestJalon(final float x, final float y) {return findClosestJalon(tmpObj.set(x, y));}
-//    public Vector2 findClosestJalon(final Vector2 obj) {
-//        if (jalons == null || jalons.isEmpty()) return null;
-//        for (final Vector2 jalon : jalons)
-//    }
+    public BebelScene sortByY() {sortByY = true; return this;}
 
     /**
      * DISPLAYABLE
@@ -117,6 +117,12 @@ public abstract class BebelScene extends GroupElement {
     protected void paintImpl(final SpriteBatch batch) {
         super.paintImpl(batch);
         if (b2dr != null) b2dr.render(world, screen.getCamera().combined);
+    }
+
+    @Override
+    protected void paintClip(SpriteBatch batch) {
+        if (sortByY) children.sort(yComparator);
+        super.paintClip(batch);
     }
 
     @Override

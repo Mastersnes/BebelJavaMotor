@@ -10,6 +10,7 @@ import com.bebel.api.resources.animations.AnimationTemplate;
 import com.bebel.api.resources.assets.PhysicsAsset;
 import com.bebel.api.utils.BebelBodyDef;
 import com.bebel.api.utils.Direction;
+import org.apache.commons.lang3.StringUtils;
 import pythagoras.i.Point;
 
 import java.util.ArrayList;
@@ -43,49 +44,70 @@ public class Personnage extends AnimableElement {
      * ANIMABLE
      */
     public Personnage up(final AnimationTemplate animation, final AnimationTemplate idle) {return up(animation, idle, null, null);}
-    public Personnage up(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return up(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage up(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.D_UP, animation, idle, bodyName, bodyType);
+    }
     public Personnage up(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_UP, animation, idle, bodyDef);
     }
     public Personnage upleft(final AnimationTemplate animation, final AnimationTemplate idle) {return upleft(animation, idle, null, null);}
-    public Personnage upleft(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return upleft(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage upleft(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.D_UP + Direction.D_LEFT, animation, idle, bodyName, bodyType);
+    }
     public Personnage upleft(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_UP + Direction.D_LEFT, animation, idle, bodyDef);
     }
     public Personnage upright(final AnimationTemplate animation, final AnimationTemplate idle) {return upright(animation, idle, null, null);}
-    public Personnage upright(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return upright(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage upright(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.D_UP + Direction.D_RIGHT, animation, idle, bodyName, bodyType);
+    }
     public Personnage upright(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_UP + Direction.D_RIGHT, animation, idle, bodyDef);
     }
 
     public Personnage down(final AnimationTemplate animation, final AnimationTemplate idle) {return down(animation, idle, null, null);}
-    public Personnage down(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return down(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage down(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.D_DOWN, animation, idle, bodyName, bodyType);
+    }
     public Personnage down(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_DOWN, animation, idle, bodyDef);
     }
     public Personnage downleft(final AnimationTemplate animation, final AnimationTemplate idle) {return downleft(animation, idle, null, null);}
-    public Personnage downleft(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return downleft(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage downleft(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.DOWN + Direction.D_LEFT, animation, idle, bodyName, bodyType);
+    }
     public Personnage downleft(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_DOWN + Direction.D_LEFT, animation, idle, bodyDef);
     }
     public Personnage downright(final AnimationTemplate animation, final AnimationTemplate idle) {return downright(animation, idle, null, null);}
-    public Personnage downright(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return downright(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage downright(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.D_DOWN + Direction.D_RIGHT, animation, idle, bodyName, bodyType);
+    }
     public Personnage downright(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_DOWN + Direction.D_RIGHT, animation, idle, bodyDef);
     }
 
     public Personnage left(final AnimationTemplate animation, final AnimationTemplate idle) {return left(animation, idle, null, null);}
-    public Personnage left(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return left(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage left(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.D_LEFT, animation, idle, bodyName, bodyType);
+    }
     public Personnage left(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_LEFT, animation, idle, bodyDef);
     }
 
     public Personnage right(final AnimationTemplate animation, final AnimationTemplate idle) {return right(animation, idle, null, null);}
-    public Personnage right(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {return right(animation, idle, new BebelBodyDef(bodyName, bodyType));}
+    public Personnage right(final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        return addAnim(Direction.D_RIGHT, animation, idle, bodyName, bodyType);
+    }
     public Personnage right(final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         return addAnim(Direction.D_RIGHT, animation, idle, bodyDef);
     }
 
+    protected Personnage addAnim(final String direction, final AnimationTemplate animation, final AnimationTemplate idle, final String bodyName, final BodyDef.BodyType bodyType) {
+        if (StringUtils.isEmpty(bodyName) || bodyType == null)
+            return addAnim(direction, animation, idle, null);
+        else return addAnim(direction, animation, idle, new BebelBodyDef(bodyName, bodyType));
+    }
     protected Personnage addAnim(final String direction, final AnimationTemplate animation, final AnimationTemplate idle, final BebelBodyDef bodyDef) {
         addAnim(direction, animation, bodyDef);
         if (idle != null) addAnim(direction + Direction.D_IDLE, idle, bodyDef);
@@ -97,11 +119,11 @@ public class Personnage extends AnimableElement {
      */
     @Override
     public boolean update(float delta) {
-        checkObjectifs();
+//        checkObjectifs();
         checkDirection();
 
-        if (body == null) move(currentDirection.x * speed, currentDirection.y * speed);
-        else body.setLinearVelocity(currentDirection.x * speed, -currentDirection.y * speed);
+//        if (body == null) move(currentDirection.x * speed * delta, currentDirection.y * speed * delta);
+//        else body.setLinearVelocity(currentDirection.x * speed * delta, -currentDirection.y * speed * delta);
 
         currentDirection.set(0, 0);
         return super.update(delta);
