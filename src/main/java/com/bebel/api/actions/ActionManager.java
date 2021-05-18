@@ -2,6 +2,7 @@ package com.bebel.api.actions;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Pools;
+import com.bebel.api.actions.complex.WalkAction;
 import com.bebel.api.actions.organisation.ParallelAction;
 import com.bebel.api.actions.organisation.RepeatAction;
 import com.bebel.api.actions.organisation.SequenceAction;
@@ -10,6 +11,7 @@ import com.bebel.api.elements.basique.predicats.AbstractElement;
 import com.bebel.api.elements.basique.predicats.DrawableElement;
 import com.bebel.api.elements.basique.predicats.MovableElement;
 import com.bebel.api.elements.basique.predicats.TransformableElement;
+import com.bebel.api.elements.complex.Personnage;
 import react.RList;
 
 /**
@@ -63,6 +65,7 @@ public class ActionManager {
      * Actions classiques
      */
     public static MoveAction move(final MovableElement target) {return action(MoveAction.class, target);}
+    public static WalkAction walk(final Personnage target) {return action(WalkAction.class, target);}
     public static ScaleAction scale(final TransformableElement target) {return action(ScaleAction.class, target);}
     public static RotateAction rotate(final TransformableElement target) {return action(RotateAction.class, target);}
     public static ColorAction color(final DrawableElement target) {return action(ColorAction.class, target);}

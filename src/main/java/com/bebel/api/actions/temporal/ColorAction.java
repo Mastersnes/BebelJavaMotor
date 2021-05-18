@@ -7,7 +7,7 @@ import com.bebel.api.elements.basique.predicats.DrawableElement;
 /**
  * Action de coloration
  */
-public class ColorAction extends BindAction<DrawableElement> {
+public class ColorAction extends TemporalAction<DrawableElement> {
     protected Color startColor = new Color(), endColor = new Color();
 
     @Override

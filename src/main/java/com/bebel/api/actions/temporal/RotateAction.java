@@ -6,7 +6,7 @@ import com.bebel.api.elements.basique.predicats.TransformableElement;
 /**
  * Action de rotation d'un angle à un autre
  */
-public class RotateAction extends BindAction<TransformableElement> {
+public class RotateAction extends TemporalAction<TransformableElement> {
     protected float startState = -1, endState = -1, objectif = -1;
 
     @Override

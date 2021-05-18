@@ -7,7 +7,7 @@ import pythagoras.f.Point;
 /**
  * Action d'agrandissement d'une valeur à une autre
  */
-public class ScaleAction extends BindAction<TransformableElement> {
+public class ScaleAction extends TemporalAction<TransformableElement> {
     protected final Point startState = new Point(), endState = new Point(), objectif = new Point();
 
     @Override

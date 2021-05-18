@@ -6,25 +6,23 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.bebel.api.elements.basique.AnimableElement;
+import com.bebel.api.elements.basique.predicats.MovableElement;
 import com.bebel.api.resources.animations.AnimationTemplate;
 import com.bebel.api.resources.assets.PhysicsAsset;
 import com.bebel.api.utils.BebelBodyDef;
+import com.bebel.api.utils.BebelMathUtils;
 import com.bebel.api.utils.Direction;
 import org.apache.commons.lang3.StringUtils;
+import pythagoras.i.MathUtil;
 import pythagoras.i.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Personnage extends AnimableElement {
-    protected static final int MARGE_OBJECTIF = 2;
-
     protected final Point lastDirection = new Point();
     protected final Point currentDirection = new Point();
     protected float speed;
-
-    protected List<Vector2> objectifs = new ArrayList<>();
-    protected Vector2 currentObjectif;
 
     public Personnage(String name) {super(name);}
     public Personnage(String name, final PhysicsAsset physics) {super(name, physics);}
@@ -35,9 +33,10 @@ public class Personnage extends AnimableElement {
         return this;
     }
 
-    public void stopMove() {objectifs.clear(); currentObjectif = null;}
-    public void goTo(float x, float y) {
-        objectifs.add(new Vector2(x, y));
+    public Personnage goTo(final int x, final int y) {
+        currentDirection.x = MathUtil.clamp(x, -1, 1);
+        currentDirection.y = MathUtil.clamp(y, -1, 1);
+        return this;
     }
 
     /**
@@ -115,34 +114,25 @@ public class Personnage extends AnimableElement {
     }
 
     /**
+     * MOVABLE
+     */
+    @Override
+    public MovableElement move(float ox, float oy, int from) {
+        if (body == null) super.move(ox, oy, from);
+        else body.setLinearVelocity(ox, -oy);
+        return this;
+    }
+
+    /**
      * DRAWABLE
      */
     @Override
     public boolean update(float delta) {
-//        checkObjectifs();
         checkDirection();
 
-//        if (body == null) move(currentDirection.x * speed * delta, currentDirection.y * speed * delta);
-//        else body.setLinearVelocity(currentDirection.x * speed * delta, -currentDirection.y * speed * delta);
-
+        move(currentDirection.x * speed * delta, currentDirection.y * speed * delta);
         currentDirection.set(0, 0);
         return super.update(delta);
-    }
-
-    /**
-     * Permet de rediriger le personnage en fonction des objectifs specifiés
-     */
-    private void checkObjectifs() {
-        if (currentObjectif == null && !objectifs.isEmpty()) currentObjectif = objectifs.remove(objectifs.size()-1);
-        if (currentObjectif != null) {
-            currentDirection.x = (int) Math.signum(currentObjectif.x - x());
-            currentDirection.y = (int) Math.signum(y() - currentObjectif.y);
-
-            if ((currentObjectif.x >= x() - MARGE_OBJECTIF && currentObjectif.x <= (x() + width + MARGE_OBJECTIF)) &&
-                (currentObjectif.y >= y() - MARGE_OBJECTIF && currentObjectif.y <= (y() + height + MARGE_OBJECTIF))) {
-                currentObjectif = null;
-            }
-        }
     }
 
     /**
@@ -182,15 +172,9 @@ public class Personnage extends AnimableElement {
         }
     }
 
-    @Override
-    public AnimableElement stop() {
-        objectifs.clear(); currentObjectif = null;
-        return super.stop();
-    }
-
-
     public Personnage activeClavier() {
         input.whileKeyDown(k -> {
+            if (!binds.isEmpty()) return;
             if (k.contains(Input.Keys.Z)) currentDirection.y = -1;
             else if (k.contains(Input.Keys.S)) currentDirection.y = 1;
             if (k.contains(Input.Keys.Q)) currentDirection.x = -1;

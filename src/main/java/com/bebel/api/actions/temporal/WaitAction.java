@@ -6,4 +6,9 @@ package com.bebel.api.actions.temporal;
 public class WaitAction extends TemporalAction {
     @Override
     protected void actTime(float percent) {}
+
+    @Override
+    public String type() {
+        return "Wait";
+    }
 }

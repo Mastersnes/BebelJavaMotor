@@ -9,7 +9,7 @@ import static com.bebel.api.elements.basique.predicats.MovableElement.*;
 /**
  * Action de deplacement d'un point à un autre
  */
-public class MoveAction extends BindAction<TransformableElement> {
+public class MoveAction extends TemporalAction<TransformableElement> {
     protected final Vector3 startPoint = new Vector3(), endPoint = new Vector3(), objectif = new Vector3();
 
     @Override

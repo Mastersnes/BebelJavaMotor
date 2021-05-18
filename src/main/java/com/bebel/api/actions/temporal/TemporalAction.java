@@ -7,11 +7,11 @@ import com.bebel.api.elements.basique.predicats.AbstractElement;
 /**
  * Classe de base pour les actions lié à l'ecoulement du temps
  */
-public abstract class TemporalAction<TARGET extends AbstractElement> extends AutomatedAction<TARGET> {
-    protected boolean isBy;
+public abstract class TemporalAction<TARGET extends AbstractElement> extends BindAction<TARGET> {
+
     protected float duration, time;
     protected Interpolation interpolation;
-    protected boolean reverse;
+    protected boolean reverse, isBy;
 
     @Override
     protected boolean act(final float delta) {
