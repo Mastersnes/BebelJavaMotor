@@ -3,27 +3,27 @@ package com.bebel.api;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Graphics;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Disposable;
+import com.bebel.api.actions.ActionManager;
+import com.bebel.api.elements.complex.BebelScene;
 import com.bebel.api.resources.ResourceManager;
+import org.lwjgl.opengl.Display;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Classe de base de l'API Bebel
  */
 public abstract class BebelGame extends Game implements Disposable {
-    protected Map<String, BebelScreen> screens = new HashMap<>();
-
     public BebelGame() {this(1);}
     public BebelGame(final float scale) {Global.scale = scale;}
 
-    public void create() {
+    public void create() {create(Display.getWidth(), Display.getHeight());}
+    public void create(final float worldW, final float worldH) {
         Global.game = this;
         Global.batch = new SpriteBatch();
         Global.shape = new ShapeRenderer();
@@ -39,27 +39,26 @@ public abstract class BebelGame extends Game implements Disposable {
             if (displayMode.refreshRate < betterRefreshRate) continue;
             Global.displayModes.add(displayMode);
         }
+
+        setScreen(new BebelScreen(worldW, worldH));
     }
 
     /**
-     * Ajoute un ecran à la map
+     * Change la scene courante pour une autre scene
      *
-     * @param screenName
+     * @param newScene
      */
-    public void addScreen(final String screenName, final BebelScreen screen) {
-        screens.put(screenName, screen);
+    public void changeScene(final BebelScene newScene) {
+        if (screen instanceof BebelScreen) {
+            ((BebelScreen) screen).changeScene(newScene);
+        }else Gdx.app.error("GAME", "Erreur, l'ecran doit être de type BebelScreen");
     }
-
-    /**
-     * Change l'ecran courant par un autre ecran de la liste
-     *
-     * @param screenName
-     */
-    public void setScreen(final String screenName) {
-        final Screen screen = screens.get(screenName);
-        if (screen != null) {
-            super.setScreen(screen);
-        } else Gdx.app.error("Game", "Erreur, l'écran " + screenName + " n'existe pas");
+    public void setScreen(final BebelScreen screen) {
+        super.setScreen(screen);
+        this.screen = screen;
+        if (screen.root.scene() != null) {
+            screen.root.scene().setScreen(screen);
+        }
     }
 
     @Override

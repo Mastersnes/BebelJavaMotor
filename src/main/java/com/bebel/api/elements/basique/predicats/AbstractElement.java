@@ -1,12 +1,11 @@
 package com.bebel.api.elements.basique.predicats;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
-import com.bebel.api.BebelScreen;
 import com.bebel.api.actions.temporal.BindAction;
 import com.bebel.api.contrats.Updatable;
+import com.bebel.api.elements.complex.BebelScene;
 import com.bebel.api.events.BebelProcessor;
 import com.bebel.api.shaders.AbstractShader;
 import react.Closeable;
@@ -22,13 +21,15 @@ import java.util.Map;
  */
 public abstract class AbstractElement implements Closeable, Disposable, Updatable {
     protected String name;
+
+    // Represente le pere direct de l'element
     protected GroupElement parent;
+    // Represente la scene mere dans laquelle se trouve l'element
+    protected BebelScene scene;
+
     protected AbstractShader shader;
-    protected BebelScreen screen;
-    protected BebelProcessor input;
     protected boolean debug, created;
     protected Color boundsColor;
-    protected float delta;
 
     public AbstractElement(final String name) {
         this.name = name;
@@ -43,11 +44,9 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
     public GroupElement parent() {return parent;}
     public void setParent(GroupElement parent) {this.parent = parent;}
 
-    public BebelScreen screen() {return screen;}
-    public void setScreen(BebelScreen screen) {
-        this.screen = screen;
-        if (screen != null) this.input = screen.input();
-    }
+    public BebelScene scene() {return scene;}
+    public void setScene(BebelScene scene) {this.scene = scene;}
+    public BebelProcessor input() {return scene.input();}
 
     public AbstractElement remove() {
         if (parent != null) parent.remove(this);
@@ -242,7 +241,6 @@ public abstract class AbstractElement implements Closeable, Disposable, Updatabl
 
     @Override
     public boolean update(float delta) {
-        this.delta = Gdx.graphics.getDeltaTime();
         binds.values().removeIf(a -> a.update(delta));
         return true;
     }

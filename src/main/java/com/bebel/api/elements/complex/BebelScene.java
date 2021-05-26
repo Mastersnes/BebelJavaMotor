@@ -6,13 +6,14 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import com.bebel.api.BebelScreen;
+import com.bebel.api.Global;
 import com.bebel.api.elements.basique.predicats.*;
-import com.bebel.api.manager.SceneManager;
+import com.bebel.api.events.BebelProcessor;
+import com.bebel.api.utils.Jalon;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
-import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.bebel.api.Global.*;
 
@@ -26,22 +27,32 @@ public abstract class BebelScene extends GroupElement {
         return (int) (((MovableElement) b).y() - ((MovableElement) a).y());
     };
 
+    protected BebelScreen screen;
+    protected BebelProcessor input;
+    protected EventableElement focus = EventableElement.EMPTY;
+
     protected World world;
     protected Box2DDebugRenderer b2dr;
     protected Array<Body> bodies = new Array<>();
     protected float accumulator;
 
     protected float axeProfondeur, profondeur;
-    protected List<Vector2> jalons;
+    protected Jalon rootJalon;
 
     protected boolean sortByY;
 
-    public BebelScene(String name) {super(name);}
+    public BebelScene(final String name) {
+        super(name);
+        input = new BebelProcessor(this, false);
+    }
 
-    public void goTo(final BebelScene scene) {
-        SceneManager.getInstance().goTo(scene); }
-    public void goTo() {
-        SceneManager.getInstance().goTo(this); }
+    public void setScreen(BebelScreen screen) {this.screen = screen;}
+    public BebelScreen screen() {return screen;}
+
+    /**
+     * Permet de selectionner la scene
+     */
+    public void select() {Global.game.changeScene(this);}
 
     /**
      * Permet d'activer la profondeur de la scene
@@ -49,9 +60,10 @@ public abstract class BebelScene extends GroupElement {
      * @param profondeur etendu de la profondeur
      * @param axe axe de la profondeur en pourcentage de la hauteur de la scene
      */
-    public void activeProfondeur(final float profondeur, final float axe) {
+    public BebelScene activeProfondeur(final float profondeur, final float axe) {
         this.profondeur = profondeur;
         this.axeProfondeur = axe;
+        return this;
     }
 
     /**
@@ -59,7 +71,7 @@ public abstract class BebelScene extends GroupElement {
      * @param gravityX
      * @param gravityY
      */
-    public void activePhysics(final float gravityX, final float gravityY) {
+    public BebelScene activePhysics(final float gravityX, final float gravityY) {
         Box2D.init();
         world = new World(new Vector2(gravityX, gravityY), true);
         world.setContactListener(new ContactListener() {
@@ -85,30 +97,47 @@ public abstract class BebelScene extends GroupElement {
             public void postSolve(Contact contact, ContactImpulse contactImpulse) {}
         });
         if (debugMode) b2dr = new Box2DDebugRenderer();
+        return this;
     }
 
     public World world() {return world;}
 
     /**
-     * Permet d'ajouter des jalons à la scene
-     * @param jalons
+     * Permet d'activer le systeme de jalon à la scene
      */
-    public void addJalons(final Vector2... jalons) {
-        if (this.jalons == null) this.jalons = new ArrayList<>();
-        this.jalons.addAll(Arrays.asList(jalons));
-    }
-    public void addJalons(final float... coords) {
-        if (this.jalons == null) this.jalons = new ArrayList<>();
-        if (coords.length % 2 != 0) {
-            Gdx.app.error("Scene", "Erreur, le nombre de parametre est incorrect");
-            Gdx.app.exit();
-        }
-        for (int i=0; i<coords.length; i+=2) {
-            jalons.add(new Vector2(coords[i], coords[i+1]));
-        }
+    protected Jalon activeJalon(final float x, final float y) {
+        this.rootJalon = new Jalon(x, y);
+        return rootJalon;
     }
 
+    /**
+     * Permet de recuperer le repere le plus proche de l'origine indiquée
+     * @param origine
+     * @return
+     */
+    protected Jalon closestJalon(final Vector2 origine) {
+        return rootJalon.listAll().stream()
+                .min((jalon1, jalon2) -> (int) (jalon1.dst(origine) - jalon2.dst(origine)))
+                .orElseThrow(NoSuchElementException::new);
+    }
+
+    /**
+     * Permet d'afficher les elements de facon triée sur le Y
+     * @return
+     */
     public BebelScene sortByY() {sortByY = true; return this;}
+
+    /**
+     * Permet de capter l'endroit où la souris a cliqué
+     * (utile pour placer les jalons)
+     * @return
+     */
+    public BebelScene debugMouse() {
+        onClick(m -> {
+            Gdx.app.log("CLICK", m.x() + ", " + m.y());
+        });
+        return this;
+    }
 
     /**
      * DISPLAYABLE
@@ -127,6 +156,7 @@ public abstract class BebelScene extends GroupElement {
 
     @Override
     public boolean update(float delta) {
+        input.processLoop();
         super.update(delta);
 
         if (world != null) {
@@ -173,5 +203,25 @@ public abstract class BebelScene extends GroupElement {
         super.dispose();
         if (world != null) world.dispose();
         if (b2dr != null) b2dr.dispose();
+    }
+
+    /**
+     * EVENTABLE
+     */
+    public void unfocus() {this.focus = EventableElement.EMPTY;}
+    public void unfocus(AbstractElement focus) {if (this.focus == focus) unfocus();}
+    public void focus(EventableElement focus) {
+        if (focus == this) unfocus();
+        else this.focus = focus;
+    }
+    public EventableElement focus() {
+        return this.focus;
+    }
+    public boolean isFocus(final EventableElement layer) {
+        return this.focus == layer;
+    }
+
+    public BebelProcessor input() {
+        return input;
     }
 }

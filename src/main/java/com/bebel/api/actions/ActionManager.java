@@ -31,13 +31,15 @@ public class ActionManager {
     /**
      * Demarrage d'une nouvelle sequence
      */
-    public static RepeatAction newSequence(final AutomatedAction... actions) {
-        final RepeatAction repeat = repeat(sequence(actions), 1);
+    public static RepeatAction newSequence(final AutomatedAction... actions) {return newSequence(sequence(actions));}
+    public static RepeatAction newSequence(final SequenceAction sequence) {
+        final RepeatAction repeat = repeat(sequence, 1);
         ActionManager.actions.add(repeat);
         return repeat;
     }
-    public static RepeatAction newParallel(final AutomatedAction... actions) {
-        final RepeatAction repeat = repeat(parallel(actions), 1);
+    public static RepeatAction newParallel(final AutomatedAction... actions) {return newParallel(parallel(actions));}
+    public static RepeatAction newParallel(final ParallelAction parallel) {
+        final RepeatAction repeat = repeat(parallel, 1);
         ActionManager.actions.add(repeat);
         return repeat;
     }

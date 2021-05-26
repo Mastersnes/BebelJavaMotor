@@ -41,7 +41,7 @@ public class DrawableElement extends EventableElement {
         super.debugMe();
         showBounds(Color.RED.cpy());
         alpha(0.8f);
-        input.onKeyDown(k -> {
+        input().onKeyDown(k -> {
             if (k.contains(Input.Keys.F)) {
                 if (k.containsOneOf(Input.Keys.UP, Input.Keys.DOWN)) flipY();
                 else if (k.containsOneOf(Input.Keys.LEFT, Input.Keys.RIGHT)) flipX();

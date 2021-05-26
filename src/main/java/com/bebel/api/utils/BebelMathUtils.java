@@ -57,4 +57,11 @@ public class BebelMathUtils {
     public static float toPercent(final float value, final float base) {
         return (value * 100) / base;
     }
+
+    /**
+     * Retourne vrai si la valeur se trouve entre les bornes données
+     */
+    public static boolean isBetween(final float value, final float min, final float max) {
+        return value >= min && value <= max;
+    }
 }

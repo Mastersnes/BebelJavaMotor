@@ -22,14 +22,14 @@ public abstract class TransformableElement extends MovableElement {
     @Override
     public void debugMe() {
         super.debugMe();
-        input.whileKeyDown(k -> {
+        input().whileKeyDown(k -> {
             // ROTATION
             if (k.contains(Input.Keys.R)) {
                 if (k.contains(Input.Keys.LEFT)) rotate(-Global.scale);
                 else if (k.contains(Input.Keys.RIGHT)) rotate(Global.scale);
             }
         });
-        input.onKeyDown(k -> {
+        input().onKeyDown(k -> {
             if (k.is(Input.Keys.R) && k.doubleClick()) rotation(0);
             if (k.is(Input.Keys.COMMA))
                 Gdx.app.log(name + "-ROTATION", ""+rotation);

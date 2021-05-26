@@ -26,7 +26,7 @@ public abstract class MovableElement extends AbstractElement {
     @Override
     public void debugMe() {
         super.debugMe();
-        input.whileKeyDown(k -> {
+        input().whileKeyDown(k -> {
             // POSITION
             if (k.containsOnlyOneOf(Input.Keys.LEFT, Input.Keys.RIGHT, Input.Keys.UP, Input.Keys.DOWN)) {
                 if (k.contains(Input.Keys.LEFT)) move(-Global.scale, 0);
@@ -43,7 +43,7 @@ public abstract class MovableElement extends AbstractElement {
                 else if (k.contains(Input.Keys.DOWN)) resize(0, -Global.scale);
             }
         });
-        input.onKeyDown(k -> {
+        input().onKeyDown(k -> {
            if (k.contains(Input.Keys.C)) {
                if (k.containsOneOf(Input.Keys.UP, Input.Keys.DOWN)) centerY();
                else if (k.containsOneOf(Input.Keys.LEFT, Input.Keys.RIGHT)) centerX();
@@ -220,11 +220,11 @@ public abstract class MovableElement extends AbstractElement {
 
     public float parentWidth() {
         if (parent != null) return parent.width();
-        else return screen.getRoot().width;
+        else return scene.width();
     }
     public float parentHeight() {
         if (parent != null) return parent.height();
-        else return screen.getRoot().height;
+        else return scene().height;
     }
 
     protected float minWidth(float x) {

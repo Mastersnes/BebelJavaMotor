@@ -119,6 +119,6 @@ public abstract class EventableElement extends TransformableElement {
     }
 
     public boolean isFocus() {
-        return screen.isFocus(this);
+        return scene != null && scene.isFocus(this);
     }
 }

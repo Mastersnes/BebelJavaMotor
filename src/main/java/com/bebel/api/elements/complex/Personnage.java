@@ -39,6 +39,16 @@ public class Personnage extends AnimableElement {
         return this;
     }
 
+    protected boolean log = false;
+    public void startLog() {log = true;}
+    public void endLog() {log = false;}
+
+    /**
+     * Compte le nombre de direction dont dispose le personnage
+     * @return
+     */
+    public int directions() {return animations.size() / 2;}
+
     /**
      * ANIMABLE
      */
@@ -141,6 +151,7 @@ public class Personnage extends AnimableElement {
     private void checkDirection() {
         final Direction xIndicator, yIndicator;
         if (currentDirection.x == 0 && currentDirection.y == 0) {
+            if (log) Gdx.app.log("IDLE", "IDLE");
             xIndicator = Direction.find(lastDirection.x, false);
             yIndicator = Direction.find(lastDirection.y, true);
 
@@ -158,6 +169,7 @@ public class Personnage extends AnimableElement {
         } else {
             xIndicator = Direction.find(currentDirection.x, false);
             yIndicator = Direction.find(currentDirection.y, true);
+            if (log) Gdx.app.log("WALK", xIndicator + " | "+ yIndicator);
 
             if (playIfExist(yIndicator.code() + xIndicator.code())) return;
             else if (playIfExist(xIndicator.code())) return;
@@ -173,7 +185,7 @@ public class Personnage extends AnimableElement {
     }
 
     public Personnage activeClavier() {
-        input.whileKeyDown(k -> {
+        input().whileKeyDown(k -> {
             if (!binds.isEmpty()) return;
             if (k.contains(Input.Keys.Z)) currentDirection.y = -1;
             else if (k.contains(Input.Keys.S)) currentDirection.y = 1;

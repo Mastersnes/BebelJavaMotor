@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.badlogic.gdx.utils.SnapshotArray;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.bebel.api.BebelScreen;
+import com.bebel.api.elements.complex.BebelScene;
 import com.bebel.api.resources.assets.PhysicsAsset;
 import com.bebel.api.resources.assets.TextureAsset;
 import com.bebel.api.shaders.AbstractShader;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represente un element dessinable regroupant d'autres elements
+ * Represente un element regroupant d'autres elements
  */
 public class GroupElement extends CollisionableElement {
     protected final SnapshotArray<AbstractElement> children = new SnapshotArray(true, 4, AbstractElement.class);
@@ -119,7 +119,7 @@ public class GroupElement extends CollisionableElement {
         element.remove();
         if (index >= children.size) children.add(element);
         else children.insert(index, element);
-        element.setParent(this); element.setScreen(screen);
+        element.setParent(this); element.setScene(scene);
         element.added();
         if (childrenChanged != null) childrenChanged.emit(true);
         if (element instanceof MovableElement) {
@@ -136,12 +136,9 @@ public class GroupElement extends CollisionableElement {
     public <ELEMENT extends AbstractElement> ELEMENT remove(final ELEMENT element) {
         if (!children.removeValue(element, true)) return null;
         else {
-            if (screen != null) screen.unfocus(element);
+            if (scene != null) scene.unfocus(element);
             element.removed();
-            element.setParent(null); element.setScreen(null);
-            if (element instanceof CollisionableElement) {
-                ((CollisionableElement) element).setScene(null);
-            }
+            element.setParent(null); element.setScene(null);
             if (childrenChanged != null) childrenChanged.emit(false);
             return element;
         }
@@ -151,10 +148,7 @@ public class GroupElement extends CollisionableElement {
         this.children.clear();
         for(final AbstractElement child : children.begin()) {
             if (child == null || !child.isAdded()) continue;
-            child.setScreen(null); child.setParent(null);
-            if (child instanceof CollisionableElement) {
-                ((CollisionableElement) child).setScene(null);
-            }
+            child.setScene(null); child.setParent(null);
             child.removed();
         }
         children.end();
@@ -187,11 +181,11 @@ public class GroupElement extends CollisionableElement {
     }
 
     @Override
-    public void setScreen(BebelScreen screen) {
-        super.setScreen(screen);
+    public void setScene(BebelScene scene) {
+        super.setScene(scene);
         for (final AbstractElement child : children.begin()) {
             if (child == null || !child.isAdded()) continue;
-            child.setScreen(screen);
+            child.setScene(scene);
         }
         children.end();
     }
@@ -266,8 +260,8 @@ public class GroupElement extends CollisionableElement {
         if (rotation == 0 && overflow == AbstractElement.Overflow.HIDDEN) {
             area.set(0, 0, width, height);
 
-            final Camera camera = screen.getCamera();
-            final Viewport viewport = screen.getViewport();
+            final Camera camera = scene.screen().getCamera();
+            final Viewport viewport = scene.screen().getViewport();
             ScissorStack.calculateScissors(camera, viewport.getScreenX(), viewport.getScreenY(), viewport.getScreenWidth(), viewport.getScreenHeight(), batch.getTransformMatrix(), area, scissors);
 
             if (ScissorStack.pushScissors(scissors)) {

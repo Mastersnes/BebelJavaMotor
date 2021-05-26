@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -12,6 +13,7 @@ import com.bebel.api.actions.ActionManager;
 import com.bebel.api.elements.basique.predicats.AbstractElement;
 import com.bebel.api.elements.basique.predicats.EventableElement;
 import com.bebel.api.elements.basique.predicats.GroupElement;
+import com.bebel.api.elements.complex.BebelScene;
 import com.bebel.api.events.BebelProcessor;
 import org.lwjgl.opengl.Display;
 
@@ -20,16 +22,13 @@ import static com.bebel.api.Global.batch;
 /**
  * Ecran de base de l'API Bebel
  */
-public abstract class BebelScreen implements Screen, Disposable {
+public class BebelScreen implements Screen, Disposable {
     protected BebelGame game;
-    protected BebelProcessor input;
 
     protected Camera camera;
     protected Viewport viewport;
 
     protected GroupElement root;
-    protected EventableElement focus = EventableElement.EMPTY;
-    protected boolean created;
 
     public BebelScreen() {
         this(Display.getWidth(), Display.getHeight());
@@ -42,31 +41,30 @@ public abstract class BebelScreen implements Screen, Disposable {
         viewport = new FitViewport(camera.viewportWidth, camera.viewportHeight, camera);
 
         game = Global.game;
-
         root = new GroupElement("root");
         root.size(viewport.getWorldWidth(), viewport.getWorldHeight());
-        root.setScreen(this);
         root.create();
-
-        input = new BebelProcessor(this, false);
     }
 
-    /**
-     * Permet de selectionner l'ecran
-     */
-    public void select() {
-        Global.game.setScreen(this);
+    public void changeScene(final BebelScene newScene) {
+        newScene.setScreen(this);
+        Gdx.input.setInputProcessor(newScene.input());
 
-        if (created) return;
-        created = true;
-        create(); makeEvents();
+        final BebelScene oldScene = root.scene();
+        if (oldScene != null) {
+            root.setScene(newScene);
+            root.addBefore(oldScene, newScene).alpha(1);
+            ActionManager.newSequence(
+                    ActionManager.fadeOut(oldScene, 1, Interpolation.linear),
+                    ActionManager.run(()-> {
+                        root.remove(oldScene);
+                    })
+            );
+        }else root.setScene(root.add(newScene));
     }
-    protected abstract void create();
-    protected abstract void makeEvents();
 
     @Override
     public void render(float delta) {
-        input.processLoop();
         ActionManager.update(delta);
         root.update(delta);
 
@@ -99,23 +97,6 @@ public abstract class BebelScreen implements Screen, Disposable {
         return (VIEWPORT) viewport;
     }
 
-    public void unfocus() {this.focus = EventableElement.EMPTY;}
-    public void unfocus(AbstractElement focus) {if (this.focus == focus) unfocus();}
-    public void focus(EventableElement focus) {
-        if (focus == root) unfocus();
-        else this.focus = focus;
-    }
-    public EventableElement focus() {
-        return this.focus;
-    }
-    public boolean isFocus(final EventableElement layer) {
-        return this.focus == layer;
-    }
-
-    public GroupElement getRoot() {
-        return root;
-    }
-
     public float delta() {
         return Gdx.graphics.getDeltaTime();
     }
@@ -128,7 +109,8 @@ public abstract class BebelScreen implements Screen, Disposable {
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(input);
+        if (root.scene() != null)
+            Gdx.input.setInputProcessor(root.scene().input());
     }
 
     @Override
@@ -143,21 +125,8 @@ public abstract class BebelScreen implements Screen, Disposable {
 
     @Override
     public void resume() {
-        Gdx.input.setInputProcessor(input);
-    }
-
-    public void alert(final String texte) {
-
-    }
-
-    public void activeClickChecker() {
-        root.onClick(m -> {
-            Gdx.app.log("Mouse", "[" + m.x() + ", " + m.y() + "]");
-        });
-    }
-
-    public BebelProcessor input() {
-        return input;
+        if (root.scene() != null)
+            Gdx.input.setInputProcessor(root.scene().input());
     }
 
     @Override

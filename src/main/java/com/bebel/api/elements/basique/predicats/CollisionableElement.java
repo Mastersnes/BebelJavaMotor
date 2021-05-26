@@ -7,9 +7,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.World;
 import com.bebel.api.Global;
-import com.bebel.api.elements.complex.BebelScene;
 import com.bebel.api.resources.assets.PhysicsAsset;
-import com.bebel.api.resources.assets.TextureAsset;
 import com.bebel.api.utils.BebelBodyDef;
 import com.bebel.api.utils.BodySaver;
 import com.codeandweb.physicseditor.PhysicsShapeCache;
@@ -29,17 +27,11 @@ public class CollisionableElement extends DrawableElement {
     /**
      * BOX2D
      */
-    protected BebelScene scene;
     protected Signal<Contact> onContactBegin;
     protected Signal<Contact> onContactEnd;
     protected PhysicsShapeCache physics;
     protected BebelBodyDef bodyDef;
     protected Body body;
-
-    public BebelScene scene() {return scene;}
-    public void setScene(BebelScene scene) {
-        this.scene = scene;
-    }
 
     public PhysicsShapeCache physics() {return physics;}
     public CollisionableElement activePhysics(final PhysicsAsset physics) {
@@ -114,6 +106,6 @@ public class CollisionableElement extends DrawableElement {
     @Override
     public void dispose() {
         super.dispose();
-        physics.dispose();
+        if (physics != null) physics.dispose();
     }
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.bebel.api.BebelScreen;
 import com.bebel.api.elements.basique.predicats.EventableElement;
 import com.bebel.api.elements.basique.predicats.GroupElement;
+import com.bebel.api.elements.complex.BebelScene;
 import com.bebel.api.events.keyboard.KeyInput;
 import com.bebel.api.events.keyboard.KeyTypeInput;
 import com.bebel.api.events.mouse.ClickWatcher;
@@ -26,7 +27,7 @@ import static com.bebel.api.events.mouse.MouseInputType.*;
  */
 public class BebelProcessor implements InputProcessor {
     protected final boolean bubble;
-    protected final BebelScreen screen;
+    protected final BebelScene scene;
 
     protected final List<Integer> keysDown = new ArrayList<>();
 
@@ -46,12 +47,12 @@ public class BebelProcessor implements InputProcessor {
     /**
      * Demare le manager, si bubble est a true, les evenements seront partagés a travers les calques
      *
-     * @param screen
+     * @param scene
      * @param bubble
      */
-    public BebelProcessor(final BebelScreen screen, boolean bubble) {
+    public BebelProcessor(final BebelScene scene, boolean bubble) {
         this.bubble = bubble;
-        this.screen = screen;
+        this.scene = scene;
     }
 
     /**
@@ -63,17 +64,16 @@ public class BebelProcessor implements InputProcessor {
      */
     protected void dispatchMouse(final MouseInputType type) {
         mouse.set(keysDown);
-        final GroupElement root = screen.getRoot();
-        final EventableElement hitLayer = root.hitTest(this.scratch.set(mouse.x(), mouse.y()));
+        final EventableElement hitLayer = scene.hitTest(this.scratch.set(mouse.x(), mouse.y()));
         if (hitLayer != null) {
             if (type == DOWN) {
-                if (mouse.isLeft() && !screen.isFocus(hitLayer)) {
-                    screen.focus().dispatchEvent(UNFOCUS, mouse, bubble);
-                    screen.focus(hitLayer);
-                    screen.focus().dispatchEvent(FOCUS, mouse, bubble);
+                if (mouse.isLeft() && !scene.isFocus(hitLayer)) {
+                    scene.focus().dispatchEvent(UNFOCUS, mouse, bubble);
+                    scene.focus(hitLayer);
+                    scene.focus().dispatchEvent(FOCUS, mouse, bubble);
                 } else if (mouse.isRight()) {
-                    screen.focus().dispatchEvent(UNFOCUS, mouse, bubble);
-                    screen.focus(EventableElement.EMPTY);
+                    scene.focus().dispatchEvent(UNFOCUS, mouse, bubble);
+                    scene.focus(EventableElement.EMPTY);
                 }
             }
             hitLayer.dispatchEvent(type, mouse, bubble);
@@ -163,7 +163,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean touchDown(int x, int y, int pointer, int button) {
-        mouse.position(x, y, screen.getViewport());
+        mouse.position(x, y, scene.screen().getViewport());
         mouse.pointer = pointer; mouse.button = button;
         dispatchMouse(DOWN);
         return true;
@@ -171,7 +171,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean touchUp(int x, int y, int pointer, int button) {
-        mouse.position(x, y, screen.getViewport());
+        mouse.position(x, y, scene.screen().getViewport());
         mouse.pointer = pointer; mouse.button = button;
         dispatchMouse(UP);
         return true;
@@ -179,7 +179,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean touchDragged(int x, int y, int pointer) {
-        mouse.position(x, y, screen.getViewport());
+        mouse.position(x, y, scene.screen().getViewport());
         mouse.pointer = pointer;
         dispatchMouse(DRAG);
         return true;
@@ -187,7 +187,7 @@ public class BebelProcessor implements InputProcessor {
 
     @Override
     public boolean mouseMoved(int x, int y) {
-        mouse.position(x, y, screen.getViewport());
+        mouse.position(x, y, scene.screen().getViewport());
         dispatchMouse(MOVE);
         return true;
     }
