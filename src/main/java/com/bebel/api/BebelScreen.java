@@ -10,11 +10,8 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bebel.api.actions.ActionManager;
-import com.bebel.api.elements.basique.predicats.AbstractElement;
-import com.bebel.api.elements.basique.predicats.EventableElement;
 import com.bebel.api.elements.basique.predicats.GroupElement;
 import com.bebel.api.elements.complex.BebelScene;
-import com.bebel.api.events.BebelProcessor;
 import org.lwjgl.opengl.Display;
 
 import static com.bebel.api.Global.batch;

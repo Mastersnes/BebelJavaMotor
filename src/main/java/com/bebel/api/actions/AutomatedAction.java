@@ -50,6 +50,7 @@ public abstract class AutomatedAction<TARGET extends AbstractElement> implements
     public void restart() {began = finish = pause = false;}
 
     public void target(final TARGET target) {this.target = target;}
+    public TARGET target() {return this.target;}
 
     public RepeatAction repeat(final int nb) {
         final RepeatAction repeatAction = ActionManager.action(RepeatAction.class);

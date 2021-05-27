@@ -105,8 +105,8 @@ public abstract class BebelScene extends GroupElement {
     /**
      * Permet d'activer le systeme de jalon à la scene
      */
-    protected Jalon activeJalon(final float x, final float y) {
-        this.rootJalon = new Jalon(x, y);
+    protected Jalon activeJalon(final String name, final float x, final float y) {
+        this.rootJalon = new Jalon(name, x, y);
         return rootJalon;
     }
 

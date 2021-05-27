@@ -2,7 +2,6 @@ package com.bebel.api.events.keyboard;
 
 import com.bebel.api.events.SimpleInput;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

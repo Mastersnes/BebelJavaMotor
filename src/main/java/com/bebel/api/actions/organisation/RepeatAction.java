@@ -1,6 +1,5 @@
 package com.bebel.api.actions.organisation;
 
-import com.badlogic.gdx.Gdx;
 import com.bebel.api.actions.AutomatedAction;
 
 /**

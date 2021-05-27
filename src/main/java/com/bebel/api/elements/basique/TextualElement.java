@@ -3,7 +3,6 @@ package com.bebel.api.elements.basique;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.bebel.api.elements.basique.predicats.CollisionableElement;
-import com.bebel.api.elements.basique.predicats.DrawableElement;
 import com.bebel.api.resources.assets.FontAsset;
 import com.bebel.api.resources.assets.PhysicsAsset;
 import org.apache.commons.lang3.StringUtils;

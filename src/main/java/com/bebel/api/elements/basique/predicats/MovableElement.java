@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.bebel.api.Global;
 import pythagoras.f.Dimension;
 import pythagoras.f.MathUtil;
-import pythagoras.f.Point;
 import react.Signal;
 import react.SignalView;
 

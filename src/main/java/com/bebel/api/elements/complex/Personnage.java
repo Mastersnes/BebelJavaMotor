@@ -2,27 +2,22 @@ package com.bebel.api.elements.complex;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.bebel.api.elements.basique.AnimableElement;
 import com.bebel.api.elements.basique.predicats.MovableElement;
 import com.bebel.api.resources.animations.AnimationTemplate;
 import com.bebel.api.resources.assets.PhysicsAsset;
 import com.bebel.api.utils.BebelBodyDef;
-import com.bebel.api.utils.BebelMathUtils;
 import com.bebel.api.utils.Direction;
 import org.apache.commons.lang3.StringUtils;
 import pythagoras.i.MathUtil;
 import pythagoras.i.Point;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Personnage extends AnimableElement {
     protected final Point lastDirection = new Point();
     protected final Point currentDirection = new Point();
     protected float speed;
+    protected boolean stopIdle;
 
     public Personnage(String name) {super(name);}
     public Personnage(String name, final PhysicsAsset physics) {super(name, physics);}
@@ -39,9 +34,8 @@ public class Personnage extends AnimableElement {
         return this;
     }
 
-    protected boolean log = false;
-    public void startLog() {log = true;}
-    public void endLog() {log = false;}
+    public void stopIdle() {stopIdle = true;}
+    public void resumeIdle() {stopIdle = false;}
 
     /**
      * Compte le nombre de direction dont dispose le personnage
@@ -138,11 +132,12 @@ public class Personnage extends AnimableElement {
      */
     @Override
     public boolean update(float delta) {
+        super.update(delta);
         checkDirection();
 
         move(currentDirection.x * speed * delta, currentDirection.y * speed * delta);
         currentDirection.set(0, 0);
-        return super.update(delta);
+        return true;
     }
 
     /**
@@ -151,7 +146,7 @@ public class Personnage extends AnimableElement {
     private void checkDirection() {
         final Direction xIndicator, yIndicator;
         if (currentDirection.x == 0 && currentDirection.y == 0) {
-            if (log) Gdx.app.log("IDLE", "IDLE");
+            if (stopIdle) return;
             xIndicator = Direction.find(lastDirection.x, false);
             yIndicator = Direction.find(lastDirection.y, true);
 
@@ -169,7 +164,6 @@ public class Personnage extends AnimableElement {
         } else {
             xIndicator = Direction.find(currentDirection.x, false);
             yIndicator = Direction.find(currentDirection.y, true);
-            if (log) Gdx.app.log("WALK", xIndicator + " | "+ yIndicator);
 
             if (playIfExist(yIndicator.code() + xIndicator.code())) return;
             else if (playIfExist(xIndicator.code())) return;

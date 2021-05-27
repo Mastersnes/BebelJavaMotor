@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Pool;
 import com.badlogic.gdx.utils.Pools;
 import com.bebel.api.contrats.Updatable;
-import org.apache.commons.lang3.StringUtils;
 import react.Signal;
 import react.Slot;
 

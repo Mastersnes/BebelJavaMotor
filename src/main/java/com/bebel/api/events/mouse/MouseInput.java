@@ -5,8 +5,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.bebel.api.events.SimpleInput;
 
-import static com.badlogic.gdx.utils.Pools.obtain;
-
 /**
  * Evenement de base de la souris
  */

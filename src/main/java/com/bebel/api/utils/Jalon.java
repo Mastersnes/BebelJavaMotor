@@ -11,35 +11,39 @@ import java.util.Objects;
  * Represente un point de repere posé sur une map
  */
 public class Jalon extends Vector2 {
+    protected String name;
     protected Jalon up, down, left, right;
 
-    public Jalon(final Vector2 position) {this(position.x, position.y);}
-    public Jalon(final float x, final float y) {set(x, y);}
+    public Jalon(final String name, final Vector2 position) {this(name, position.x, position.y);}
+    public Jalon(final String name, final float x, final float y) {
+        this.name = name;
+        set(x, y);
+    }
 
     public float x() {return x;}
     public float y() {return y;}
 
     public Jalon up() {return up;}
-    public Jalon up(final float x, final float y) {
-        this.up = new Jalon(x, y);
+    public Jalon up(final String name, final float x, final float y) {
+        this.up = new Jalon(name, x, y);
         return up.down = this;
     }
 
     public Jalon down() {return down;}
-    public Jalon down(final float x, final float y) {
-        this.down = new Jalon(x, y);
+    public Jalon down(final String name, final float x, final float y) {
+        this.down = new Jalon(name, x, y);
         return down.up = this;
     }
 
     public Jalon left() {return left;}
-    public Jalon left(final float x, final float y) {
-        this.left = new Jalon(x, y);
+    public Jalon left(final String name, final float x, final float y) {
+        this.left = new Jalon(name, x, y);
         return left.right = this;
     }
 
     public Jalon right() {return right;}
-    public Jalon right(final float x, final float y) {
-        this.right = new Jalon(x, y);
+    public Jalon right(final String name, final float x, final float y) {
+        this.right = new Jalon(name, x, y);
         return right.left = this;
     }
 
@@ -95,6 +99,8 @@ public class Jalon extends Vector2 {
             // Cas limite - Fin de la pile atteinte sans avoir trouvé la destination
         }
         return null;
-
     }
+
+    @Override
+    public String toString() {return name;}
 }

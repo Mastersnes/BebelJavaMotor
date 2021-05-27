@@ -34,8 +34,6 @@ public class ParallelAction extends AutomatedAction {
         }
     }
 
-    public void next(){}
-
     @Override
     public void stop() {
         actions.stream().forEach(a -> a.stop());

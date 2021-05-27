@@ -10,6 +10,11 @@ import com.badlogic.gdx.utils.Array;
 public class AnimationTemplate extends Animation<TextureRegion> {
     protected boolean defaultFlipX, defaultFlipY;
 
+    public AnimationTemplate(final AnimationTemplate other) {
+        this(other.getFrameDuration(), new Array<>(other.getKeyFrames()), other.getPlayMode());
+        this.defaultFlipX = other.defaultFlipX;
+        this.defaultFlipY = other.defaultFlipY;
+    }
     public AnimationTemplate(float frameDuration, Array<? extends TextureRegion> keyFrames) {super(frameDuration, keyFrames);}
     public AnimationTemplate(float frameDuration, Array<? extends TextureRegion> keyFrames, PlayMode playMode) {super(frameDuration, keyFrames, playMode);}
     public AnimationTemplate(TextureRegion firstFrame) {this(1f, firstFrame);}
