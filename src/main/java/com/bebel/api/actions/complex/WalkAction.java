@@ -25,7 +25,7 @@ public class WalkAction extends BindAction<Personnage> {
 
     @Override
     protected boolean act(float delta) {
-        direction.set(Math.round(objectif.x - target.x()), Math.round(target.y() - objectif.y));
+        direction.set(Math.round(objectif.x - (target.x() + (target.width()/2))), Math.round(target.y() - objectif.y));
         if (BebelMathUtils.isBetween(direction.x, -MARGE_ERREUR, MARGE_ERREUR) &&
                 BebelMathUtils.isBetween(direction.y, -MARGE_ERREUR, MARGE_ERREUR)) {
             target.goTo(0, 0);
