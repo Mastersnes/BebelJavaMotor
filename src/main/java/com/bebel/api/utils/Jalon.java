@@ -1,6 +1,7 @@
 package com.bebel.api.utils;
 
 import com.badlogic.gdx.math.Vector2;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ public class Jalon extends Vector2 {
 
     /**
      * Permet de lister de facon recursive l'ensemble des jalons de la pile
-     * @return
      */
     public List<Jalon> listAll() {return listAllExcept(null);}
     protected List<Jalon> listAllExcept(final Jalon except) {
@@ -63,10 +63,18 @@ public class Jalon extends Vector2 {
     }
 
     /**
+     * Permet de trouver un jalon par son nom
+     */
+    public Jalon find(final String name) {
+        for (final Jalon jalon : listAll()) {
+            if (StringUtils.equals(jalon.name, name)) return jalon;
+        }
+        return null;
+    }
+
+    /**
      * Permet de trouver le meilleur chemin de ce repere à une destination donnée
      * La qualité du chemin est basé sur la distance totale de traversée
-     * @param destination
-     * @return
      */
     public Path findBestPath(final Jalon destination) {
         return findBestPath(destination, new ArrayList<>());

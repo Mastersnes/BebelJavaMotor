@@ -24,7 +24,7 @@ import static com.bebel.api.events.mouse.MouseInputType.*;
  * Manager d'evenements
  */
 public class BebelProcessor implements InputProcessor {
-    protected final boolean bubble;
+    protected boolean bubble;
     protected final BebelScene scene;
 
     protected final List<Integer> keysDown = new ArrayList<>();
@@ -52,6 +52,8 @@ public class BebelProcessor implements InputProcessor {
         this.bubble = bubble;
         this.scene = scene;
     }
+
+    public void bubble(final boolean value) {this.bubble = true;}
 
     /**
      * Permet de dispatcher les evenements souris aux calques

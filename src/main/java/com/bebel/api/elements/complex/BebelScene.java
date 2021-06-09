@@ -1,7 +1,10 @@
 package com.bebel.api.elements.complex;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -10,8 +13,10 @@ import com.bebel.api.BebelScreen;
 import com.bebel.api.Global;
 import com.bebel.api.elements.basique.predicats.*;
 import com.bebel.api.events.BebelProcessor;
+import com.bebel.api.resources.assets.FontAsset;
 import com.bebel.api.utils.Jalon;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.NoSuchElementException;
 
@@ -21,12 +26,6 @@ import static com.bebel.api.Global.*;
  * Element representant une scene d'un jeu
  */
 public abstract class BebelScene extends GroupElement {
-    protected final Comparator<AbstractElement> yComparator = (a, b) -> {
-        if (!(a instanceof MovableElement && b instanceof MovableElement)) return 0;
-        if (!(a.isDynamic() && b.isDynamic())) return 0;
-        return (int) (((MovableElement) b).y() - ((MovableElement) a).y());
-    };
-
     protected BebelScreen screen;
     protected BebelProcessor input;
     protected EventableElement focus = EventableElement.EMPTY;
@@ -36,10 +35,11 @@ public abstract class BebelScene extends GroupElement {
     protected Array<Body> bodies = new Array<>();
     protected float accumulator;
 
+    private ArrayList<Comparator<AbstractElement>> comparators;
     protected float axeProfondeur, profondeur;
-    protected Jalon rootJalon;
 
-    protected boolean sortByY;
+    protected Jalon rootJalon;
+    private boolean showJalons;
 
     public BebelScene(final String name) {
         super(name);
@@ -122,10 +122,28 @@ public abstract class BebelScene extends GroupElement {
     }
 
     /**
+     * Permet d'afficher les jalons de la carte (utile pour debug)
+     * @return
+     */
+    protected BebelScene showJalons() {this.showJalons = true; return this;}
+
+    /**
      * Permet d'afficher les elements de facon triée sur le Y
      * @return
      */
-    public BebelScene sortByY() {sortByY = true; return this;}
+    public BebelScene sortByY() {
+        return addComparator((a, b) -> {
+            if (!(a instanceof MovableElement && b instanceof MovableElement)) return 0;
+            if (!(a.isDynamic() && b.isDynamic())) return 0;
+            return (int) (((MovableElement) b).y() - ((MovableElement) a).y());
+        });
+    }
+
+    protected BebelScene addComparator(final Comparator<AbstractElement> newComparator) {
+        if (this.comparators == null) this.comparators = new ArrayList<>();
+        this.comparators.add(newComparator);
+        return this;
+    }
 
     /**
      * Permet de capter l'endroit où la souris a cliqué
@@ -146,11 +164,29 @@ public abstract class BebelScene extends GroupElement {
     protected void paintImpl(final SpriteBatch batch) {
         super.paintImpl(batch);
         if (b2dr != null) b2dr.render(world, screen.getCamera().combined);
+        if (showJalons) {
+            for (final Jalon jalon : rootJalon.listAll()) {
+                batch.end();
+                final ShapeRenderer shape = Global.shape;
+                shape.setProjectionMatrix(batch.getProjectionMatrix());
+                shape.setTransformMatrix(batch.getTransformMatrix());
+                shape.setColor(Color.RED.cpy());
+                shape.begin(ShapeRenderer.ShapeType.Line);
+                shape.rect(jalon.x() - 2, jalon.y() - 2, 2, 2);
+                shape.end();
+                batch.begin();
+
+                arialFont.getData().setScale(0.1f);
+                arialFont.draw(batch, jalon.toString(), jalon.x-1.5f, jalon.y+0.5f);
+                arialFont.getData().setScale(1f);
+            }
+        }
     }
 
     @Override
     protected void paintClip(SpriteBatch batch) {
-        if (sortByY) children.sort(yComparator);
+        if (comparators != null)
+            comparators.forEach(comparator -> children.sort(comparator));
         super.paintClip(batch);
     }
 
